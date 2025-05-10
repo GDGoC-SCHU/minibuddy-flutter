@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minibuddy/services/onboarding/onboarding_state.dart';
 
 class NicknameInputScreen extends StatefulWidget {
   final bool isFromEdit;
@@ -28,6 +29,8 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
 
   void _onSubmit() {
     if (_nickname.isEmpty) return;
+
+    OnboardingState().nickname = _nickname; // 입력값 저장
 
     if (widget.isFromEdit) {
       Navigator.pop(context); // 마이페이지로 복귀

@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:intl/intl.dart';
+import 'package:minibuddy/services/onboarding/onboarding_state.dart';
 
 class BirthdayInputScreen extends StatefulWidget {
   final bool isFromEdit;
@@ -45,10 +46,13 @@ class _BirthdayInputScreenState extends State<BirthdayInputScreen> {
   void _onSubmit() {
     if (_selectedDate == null) return;
 
+    final formatted = DateFormat('yyyy-MM-dd').format(_selectedDate!);
+    OnboardingState().birthdate = formatted; // 생일을 문자열로 저장
+
     if (widget.isFromEdit) {
       Navigator.pop(context); // 마이페이지로 복귀
     } else {
-      context.push('/onboarding/keyword'); // 온보딩 진행
+      context.push('/onboarding/keyword'); // 다음 온보딩 화면으로 이동
     }
   }
 

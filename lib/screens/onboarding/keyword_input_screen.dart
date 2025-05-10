@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minibuddy/services/onboarding/onboarding_state.dart';
+import 'package:minibuddy/services/onboarding/onboarding_repository.dart';
 
 class KeywordInputScreen extends StatefulWidget {
   final bool isFromEdit;
@@ -44,11 +46,20 @@ class _KeywordInputScreenState extends State<KeywordInputScreen> {
     });
   }
 
-  void _onSubmit() {
+  void _onSubmit() async {
+    OnboardingState().keywords = _selected;
+
     if (widget.isFromEdit) {
       Navigator.pop(context); // 마이페이지로 복귀
     } else {
-      context.push('/onboarding/welcome'); // 온보딩 진행
+      try {
+        await OnboardingRepository().submitSignup(); // 서버에 회원가입 요청
+        if (!context.mounted) return;
+        context.go('/onboarding/welcome'); // 성공 시 이동
+      } catch (e) {
+        if (!context.mounted) return;
+        context.go('/error/server'); // 실패 시 서버 오류 페이지로 이동
+      }
     }
   }
 

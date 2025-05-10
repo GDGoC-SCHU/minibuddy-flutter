@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:minibuddy/services/router.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minibuddy/services/utils/router.dart';
 
 void main() {
   runApp(const MinibuddyApp());
