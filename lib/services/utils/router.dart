@@ -21,13 +21,6 @@ import 'package:minibuddy/screens/user/memory_detail_screen.dart';
 // MyPage
 import 'package:minibuddy/screens/mypage/my_page_screen.dart';
 
-// Error
-import 'package:minibuddy/screens/error/network_error_screen.dart';
-import 'package:minibuddy/screens/error/server_error_screen.dart';
-
-// Common
-import 'package:minibuddy/screens/common/loading_screen.dart';
-
 final GoRouter router = GoRouter(
   initialLocation: '/',
   routes: [
@@ -95,14 +88,5 @@ final GoRouter router = GoRouter(
 
     // MyPage
     GoRoute(path: '/mypage', builder: (_, __) => const MyPageScreen()),
-
-    // Error
-    GoRoute(
-        path: '/error/network', builder: (_, __) => const NetworkErrorScreen()),
-    GoRoute(
-        path: '/error/server', builder: (_, __) => const ServerErrorScreen()),
-
-    // Loading
-    GoRoute(path: '/loading', builder: (_, __) => const LoadingScreen()),
   ],
 );
