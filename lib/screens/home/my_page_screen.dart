@@ -4,7 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/blocs/profile/profile_bloc.dart';
 import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
-import 'package:minibuddy/data/profile/profile_repository.dart';
 import 'package:minibuddy/models/profile_model.dart';
 import 'package:minibuddy/screens/common/loading_page.dart';
 
@@ -33,56 +32,52 @@ class MyPageScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => ProfileBloc(
-        repository: ProfileRepository(context),
-      )..add(LoadProfile()),
-      child: Scaffold(
-        appBar: AppBar(title: const Text('마이페이지')),
-        body: BlocBuilder<ProfileBloc, ProfileState>(
-          builder: (context, state) {
-            if (state is ProfileLoading) {
-              return const LoadingScreen(); // 기존에 만든 로딩 위젯 사용
-            } else if (state is ProfileLoaded) {
-              final Profile profile = state.profile;
+    return BlocBuilder<ProfileBloc, ProfileState>(
+      builder: (context, state) {
+        Widget bodyContent = const SizedBox.shrink();
 
-              debugPrint('📥 GET profile: ${profile.toJson()}');
+        if (state is ProfileLoaded) {
+          final profile = state.profile;
 
-              return ListView(
-                padding: const EdgeInsets.all(24),
-                children: [
-                  ListTile(
-                    title: const Text('계정 정보'),
-                    subtitle: Text(profile.email),
-                  ),
-                  const Divider(),
-                  ListTile(
-                    title: const Text('닉네임 변경'),
-                    trailing: Text(profile.name),
-                    onTap: () => _navigateAndPatch(context, 'nickname'),
-                  ),
-                  ListTile(
-                    title: const Text('생년월일 변경'),
-                    trailing: Text(
-                      '${profile.birthdate.year}년 ${profile.birthdate.month}월 ${profile.birthdate.day}일',
-                    ),
-                    onTap: () => _navigateAndPatch(context, 'birthday'),
-                  ),
-                  ListTile(
-                    title: const Text('키워드 변경'),
-                    trailing: Text(profile.keywords.join(', ')),
-                    onTap: () => _navigateAndPatch(context, 'keyword'),
-                  ),
-                ],
-              );
-            } else if (state is ProfileError) {
-              return Center(child: Text(state.message));
-            } else {
-              return const SizedBox.shrink();
-            }
-          },
-        ),
-      ),
+          bodyContent = ListView(
+            padding: const EdgeInsets.all(24),
+            children: [
+              ListTile(
+                  title: const Text('계정 정보'), subtitle: Text(profile.email)),
+              const Divider(),
+              ListTile(
+                title: const Text('닉네임 변경'),
+                trailing: Text(profile.name),
+                onTap: () => _navigateAndPatch(context, 'nickname'),
+              ),
+              ListTile(
+                title: const Text('생년월일 변경'),
+                trailing: Text(
+                  '${profile.birthdate.year}년 '
+                  '${profile.birthdate.month}월 '
+                  '${profile.birthdate.day}일',
+                ),
+                onTap: () => _navigateAndPatch(context, 'birthday'),
+              ),
+              ListTile(
+                title: const Text('키워드 변경'),
+                trailing: Text(profile.keywords.join(', ')),
+                onTap: () => _navigateAndPatch(context, 'keyword'),
+              ),
+            ],
+          );
+        }
+
+        return Stack(
+          children: [
+            Scaffold(
+              appBar: AppBar(title: const Text('마이페이지')),
+              body: bodyContent,
+            ),
+            if (state is ProfileLoading) const LoadingScreen(),
+          ],
+        );
+      },
     );
   }
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 // Onboarding
@@ -10,7 +11,12 @@ import 'package:minibuddy/screens/onboarding/welcome_screen.dart';
 
 // Home
 import 'package:minibuddy/screens/home/home_screen.dart';
+
+// MyPage
 import 'package:minibuddy/screens/home/my_page_screen.dart';
+import 'package:minibuddy/blocs/profile/profile_bloc.dart';
+import 'package:minibuddy/blocs/profile/profile_event.dart';
+import 'package:minibuddy/data/profile/profile_repository.dart';
 
 // User
 import 'package:minibuddy/screens/user/user_screen.dart';
@@ -24,7 +30,6 @@ final GoRouter router = GoRouter(
   routes: [
     GoRoute(path: '/', builder: (_, __) => const InitialScreen()),
 
-    // Onboarding
     // Onboarding
     GoRoute(
       path: '/onboarding/nickname',
@@ -85,6 +90,14 @@ final GoRouter router = GoRouter(
         path: '/user/memory', builder: (_, __) => const MemoryDetailScreen()),
 
     // MyPage
-    GoRoute(path: '/mypage', builder: (_, __) => const MyPageScreen()),
+    GoRoute(
+      path: '/mypage',
+      builder: (context, state) => BlocProvider(
+        create: (_) => ProfileBloc(
+          repository: ProfileRepository(context),
+        )..add(LoadProfile()),
+        child: const MyPageScreen(),
+      ),
+    ),
   ],
 );
