@@ -9,8 +9,7 @@ class HomeScreen extends StatelessWidget {
     return Scaffold(
       appBar: AppBar(
         title: const Text('HomeScreen'),
-        // 🙌 🙌 🙌 여기 false로 변경할 것!!
-        automaticallyImplyLeading: true,
+        automaticallyImplyLeading: false,
       ),
       body: const Center(
         child: Text('HomeScreen 화면입니다'),

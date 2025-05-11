@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:minibuddy/services/utils/error_type.dart';
+import 'package:minibuddy/utils/error_type.dart';
 
 class ErrorPage extends StatelessWidget {
   final ErrorType errorType;

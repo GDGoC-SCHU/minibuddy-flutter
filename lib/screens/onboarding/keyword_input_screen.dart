@@ -3,7 +3,7 @@ import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minibuddy/services/onboarding/onboarding_state.dart';
 import 'package:minibuddy/services/onboarding/onboarding_repository.dart';
-import 'package:minibuddy/services/utils/handle_request.dart';
+import 'package:minibuddy/utils/handle_request.dart';
 
 class KeywordInputScreen extends StatefulWidget {
   final bool isFromEdit;

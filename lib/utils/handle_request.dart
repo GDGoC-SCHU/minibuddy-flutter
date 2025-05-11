@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:minibuddy/screens/common/error_page.dart';
-import 'package:minibuddy/services/utils/error_type.dart';
+import 'package:minibuddy/utils/error_type.dart';
 
 Future<void> handleRequest<T>({
   required BuildContext context,

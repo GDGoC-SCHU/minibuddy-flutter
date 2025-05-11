@@ -10,6 +10,7 @@ import 'package:minibuddy/screens/onboarding/welcome_screen.dart';
 
 // Home
 import 'package:minibuddy/screens/home/home_screen.dart';
+import 'package:minibuddy/screens/home/my_page_screen.dart';
 
 // User
 import 'package:minibuddy/screens/user/user_screen.dart';
@@ -17,9 +18,6 @@ import 'package:minibuddy/screens/user/anxiety_detail_screen.dart';
 import 'package:minibuddy/screens/user/depression_detail_screen.dart';
 import 'package:minibuddy/screens/user/stress_detail_screen.dart';
 import 'package:minibuddy/screens/user/memory_detail_screen.dart';
-
-// MyPage
-import 'package:minibuddy/screens/mypage/my_page_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
