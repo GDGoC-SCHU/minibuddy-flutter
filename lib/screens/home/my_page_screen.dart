@@ -6,6 +6,7 @@ import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
 import 'package:minibuddy/data/profile/profile_repository.dart';
 import 'package:minibuddy/models/profile_model.dart';
+import 'package:minibuddy/screens/common/loading_page.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -41,7 +42,7 @@ class MyPageScreen extends StatelessWidget {
         body: BlocBuilder<ProfileBloc, ProfileState>(
           builder: (context, state) {
             if (state is ProfileLoading) {
-              return const Center(child: CircularProgressIndicator());
+              return const LoadingScreen(); // 기존에 만든 로딩 위젯 사용
             } else if (state is ProfileLoaded) {
               final Profile profile = state.profile;
 

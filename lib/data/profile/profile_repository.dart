@@ -29,12 +29,14 @@ class ProfileRepository {
     DateTime? birthdate,
     List<String>? keywords,
   }) async {
+    final current = await getProfile(); // 기존 값 조회
+
     await handleRequest<void>(
       context: context,
       fetch: () => patchProfile(
-        name: name,
-        birthdate: birthdate,
-        keywords: keywords,
+        name: name ?? current.name, // 변경 없으면 기존값
+        birthdate: birthdate ?? current.birthdate,
+        keywords: keywords ?? current.keywords,
       ),
       onSuccess: (_) => debugPrint('PATCH 성공'),
       retry: () => updateProfile(
