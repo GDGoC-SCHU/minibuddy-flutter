@@ -79,36 +79,36 @@ class ErrorPage extends StatelessWidget {
   IconData _iconFor(ErrorType type) {
     switch (type) {
       case ErrorType.serverError:
+      case ErrorType.unknown:
         return Icons.cloud_off;
       case ErrorType.connectionError:
         return Icons.wifi_off;
-      case ErrorType.unknown:
       default:
-        return Icons.error_outline;
+        return Icons.cloud_off;
     }
   }
 
   String _titleFor(ErrorType type) {
     switch (type) {
       case ErrorType.serverError:
+      case ErrorType.unknown:
         return "Server Error";
       case ErrorType.connectionError:
         return "Network Error";
-      case ErrorType.unknown:
       default:
-        return "Unexpected Error";
+        return "Server Error";
     }
   }
 
   String _messageFor(ErrorType type) {
     switch (type) {
       case ErrorType.serverError:
+      case ErrorType.unknown:
         return "We're having trouble connecting to the server.\nPlease try again later.";
       case ErrorType.connectionError:
         return "It looks like you're offline.\nCheck your internet connection and try again.";
-      case ErrorType.unknown:
       default:
-        return "An unexpected error occurred.\nPlease try again.";
+        return "We're having trouble connecting to the server.\nPlease try again later.";
     }
   }
 }
