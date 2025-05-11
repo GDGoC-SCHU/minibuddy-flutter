@@ -33,8 +33,9 @@ class MyPageScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (_) =>
-          ProfileBloc(repository: ProfileRepository())..add(LoadProfile()),
+      create: (context) => ProfileBloc(
+        repository: ProfileRepository(context),
+      )..add(LoadProfile()),
       child: Scaffold(
         appBar: AppBar(title: const Text('마이페이지')),
         body: BlocBuilder<ProfileBloc, ProfileState>(

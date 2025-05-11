@@ -1,7 +1,7 @@
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:minibuddy/blocs/profile/profile_event.dart';
+import 'package:minibuddy/blocs/profile/profile_state.dart';
 import 'package:minibuddy/data/profile/profile_repository.dart';
-import 'profile_event.dart';
-import 'profile_state.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final ProfileRepository repository;
@@ -13,7 +13,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final profile = await repository.getProfile();
         emit(ProfileLoaded(profile));
       } catch (e) {
-        emit(ProfileError('불러오기 실패'));
+        emit(ProfileError('프로필 불러오기 실패'));
       }
     });
 
@@ -27,7 +27,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         final updated = await repository.getProfile();
         emit(ProfileLoaded(updated));
       } catch (e) {
-        emit(ProfileError('수정 실패'));
+        emit(ProfileError('프로필 수정 실패'));
       }
     });
   }
