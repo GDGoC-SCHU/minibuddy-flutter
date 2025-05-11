@@ -18,10 +18,20 @@ Future<void> handleRequest<T>({
   } on DioException catch (e) {
     if (context.mounted) {
       final errorType = _mapErrorTypeFromDio(e);
+
+// 에러 로그 출력
+      debugPrint('❌ DioException: ${e.message}');
+      debugPrint('📦 ErrorType: $errorType');
+      debugPrint('📡 StatusCode: ${e.response?.statusCode}');
+      debugPrint('📄 Data: ${e.response?.data}');
+
       _goToError(context, errorType, retry, backScreen);
     }
-  } catch (_) {
+  } catch (e, stackTrace) {
     if (context.mounted) {
+      // 예외 로그 출력
+      debugPrint('❌ Unknown error: $e');
+      debugPrint('📍 Stacktrace: $stackTrace');
       _goToError(context, ErrorType.unknown, retry, backScreen);
     }
   }
