@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:dio/dio.dart';
 import 'package:minibuddy/screens/common/error_page.dart';
 import 'package:minibuddy/utils/error_type.dart';
+import 'package:minibuddy/screens/common/loading_page.dart';
 
 Future<void> handleRequest<T>({
   required BuildContext context,
@@ -10,26 +11,45 @@ Future<void> handleRequest<T>({
   required VoidCallback retry,
   Widget? backScreen,
 }) async {
+  final stopwatch = Stopwatch()..start();
+  bool showLoading = false;
+
+  final delayed = Future.delayed(const Duration(milliseconds: 300));
+
   try {
-    final data = await fetch();
+    final fetchFuture = fetch();
+    final data = await Future.any([
+      fetchFuture,
+      delayed,
+    ]);
+
+    final fetchResult = await fetchFuture;
+    stopwatch.stop();
+
+    if (stopwatch.elapsedMilliseconds >= 300 && context.mounted) {
+      showLoading = true;
+      showDialog(
+        context: context,
+        barrierDismissible: false,
+        builder: (_) => const LoadingScreen(),
+      );
+    }
+
     if (context.mounted) {
-      onSuccess(data);
+      if (showLoading) Navigator.of(context).pop();
+      onSuccess(fetchResult);
     }
   } on DioException catch (e) {
+    stopwatch.stop();
     if (context.mounted) {
+      if (showLoading) Navigator.of(context).pop();
       final errorType = _mapErrorTypeFromDio(e);
-
-// 에러 로그 출력
-      debugPrint('❌ DioException: ${e.message}');
-      debugPrint('📦 ErrorType: $errorType');
-      debugPrint('📡 StatusCode: ${e.response?.statusCode}');
-      debugPrint('📄 Data: ${e.response?.data}');
-
       _goToError(context, errorType, retry, backScreen);
     }
   } catch (e, stackTrace) {
+    stopwatch.stop();
     if (context.mounted) {
-      // 예외 로그 출력
+      if (showLoading) Navigator.of(context).pop();
       debugPrint('❌ Unknown error: $e');
       debugPrint('📍 Stacktrace: $stackTrace');
       _goToError(context, ErrorType.unknown, retry, backScreen);

@@ -4,8 +4,6 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/blocs/profile/profile_bloc.dart';
 import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
-import 'package:minibuddy/models/profile_model.dart';
-import 'package:minibuddy/screens/common/loading_page.dart';
 
 class MyPageScreen extends StatelessWidget {
   const MyPageScreen({super.key});
@@ -34,49 +32,46 @@ class MyPageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        Widget bodyContent = const SizedBox.shrink();
-
+        // ProfileLoaded 상태일 때만 본문 구성
         if (state is ProfileLoaded) {
           final profile = state.profile;
 
-          bodyContent = ListView(
-            padding: const EdgeInsets.all(24),
-            children: [
-              ListTile(
-                  title: const Text('계정 정보'), subtitle: Text(profile.email)),
-              const Divider(),
-              ListTile(
-                title: const Text('닉네임 변경'),
-                trailing: Text(profile.name),
-                onTap: () => _navigateAndPatch(context, 'nickname'),
-              ),
-              ListTile(
-                title: const Text('생년월일 변경'),
-                trailing: Text(
-                  '${profile.birthdate.year}년 '
-                  '${profile.birthdate.month}월 '
-                  '${profile.birthdate.day}일',
+          return Scaffold(
+            appBar: AppBar(title: const Text('마이페이지')),
+            body: ListView(
+              padding: const EdgeInsets.all(24),
+              children: [
+                ListTile(
+                  title: const Text('계정 정보'),
+                  subtitle: Text(profile.email),
                 ),
-                onTap: () => _navigateAndPatch(context, 'birthday'),
-              ),
-              ListTile(
-                title: const Text('키워드 변경'),
-                trailing: Text(profile.keywords.join(', ')),
-                onTap: () => _navigateAndPatch(context, 'keyword'),
-              ),
-            ],
+                const Divider(),
+                ListTile(
+                  title: const Text('닉네임 변경'),
+                  trailing: Text(profile.name),
+                  onTap: () => _navigateAndPatch(context, 'nickname'),
+                ),
+                ListTile(
+                  title: const Text('생년월일 변경'),
+                  trailing: Text(
+                    '${profile.birthdate.year}년 '
+                    '${profile.birthdate.month}월 '
+                    '${profile.birthdate.day}일',
+                  ),
+                  onTap: () => _navigateAndPatch(context, 'birthday'),
+                ),
+                ListTile(
+                  title: const Text('키워드 변경'),
+                  trailing: Text(profile.keywords.join(', ')),
+                  onTap: () => _navigateAndPatch(context, 'keyword'),
+                ),
+              ],
+            ),
           );
         }
 
-        return Stack(
-          children: [
-            Scaffold(
-              appBar: AppBar(title: const Text('마이페이지')),
-              body: bodyContent,
-            ),
-            if (state is ProfileLoading) const LoadingScreen(),
-          ],
-        );
+        // ProfileLoading 또는 ProfileError 상태일 땐 빈 화면 반환
+        return const SizedBox.shrink();
       },
     );
   }
