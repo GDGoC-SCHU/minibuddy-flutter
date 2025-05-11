@@ -10,20 +10,15 @@ class MyPageScreen extends StatelessWidget {
 
   void _navigateAndPatch(BuildContext context, String field) async {
     final bloc = context.read<ProfileBloc>();
-
     final result = await context.push('/edit/$field');
 
     if (result != null) {
       if (field == 'nickname' && result is String) {
-        debugPrint('🔁 PATCH name: $result');
         bloc.add(UpdateProfile(name: result));
       } else if (field == 'birthday' && result is DateTime) {
-        debugPrint('🔁 PATCH birthdate: $result');
         bloc.add(UpdateProfile(birthdate: result));
-      } else if (field == 'keyword' && result is List) {
-        final keywords = List<String>.from(result.map((e) => e.toString()));
-        debugPrint('🔁 PATCH keywords: $keywords');
-        bloc.add(UpdateProfile(keywords: keywords));
+      } else if (field == 'keyword' && result is List<String>) {
+        bloc.add(UpdateProfile(keywords: result));
       }
     }
   }
@@ -32,47 +27,107 @@ class MyPageScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocBuilder<ProfileBloc, ProfileState>(
       builder: (context, state) {
-        // ProfileLoaded 상태일 때만 본문 구성
+        Widget content = const SizedBox.shrink();
+
         if (state is ProfileLoaded) {
           final profile = state.profile;
 
-          return Scaffold(
-            appBar: AppBar(title: const Text('마이페이지')),
-            body: ListView(
-              padding: const EdgeInsets.all(24),
-              children: [
-                ListTile(
-                  title: const Text('계정 정보'),
-                  subtitle: Text(profile.email),
+          content = ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+            children: [
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Profile',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
-                const Divider(),
-                ListTile(
-                  title: const Text('닉네임 변경'),
-                  trailing: Text(profile.name),
-                  onTap: () => _navigateAndPatch(context, 'nickname'),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Account Info'),
+                trailing: Text(profile.email,
+                    style: TextStyle(color: Colors.grey[700])),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Change Nickname'),
+                trailing: _trailingText(profile.name),
+                onTap: () => _navigateAndPatch(context, 'nickname'),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Change Birthday'),
+                trailing: _trailingText(
+                  '${profile.birthdate.year}.${profile.birthdate.month.toString().padLeft(2, '0')}.${profile.birthdate.day.toString().padLeft(2, '0')}',
                 ),
-                ListTile(
-                  title: const Text('생년월일 변경'),
-                  trailing: Text(
-                    '${profile.birthdate.year}년 '
-                    '${profile.birthdate.month}월 '
-                    '${profile.birthdate.day}일',
-                  ),
-                  onTap: () => _navigateAndPatch(context, 'birthday'),
+                onTap: () => _navigateAndPatch(context, 'birthday'),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Change Keywords'),
+                trailing: _trailingText(profile.keywords.join(', ')),
+                onTap: () => _navigateAndPatch(context, 'keyword'),
+              ),
+              const SizedBox(height: 32),
+              const Padding(
+                padding: EdgeInsets.only(bottom: 8),
+                child: Text(
+                  'Settings',
+                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
                 ),
-                ListTile(
-                  title: const Text('키워드 변경'),
-                  trailing: Text(profile.keywords.join(', ')),
-                  onTap: () => _navigateAndPatch(context, 'keyword'),
-                ),
-              ],
-            ),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Open Source Licenses'),
+                trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                    size: 14, color: Colors.grey),
+                onTap: () => showLicensePage(context: context),
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Privacy Policy'),
+                trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                    size: 14, color: Colors.grey),
+                onTap: () {},
+              ),
+              ListTile(
+                dense: true,
+                title: const Text('Terms of Use'),
+                trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                    size: 14, color: Colors.grey),
+                onTap: () {},
+              ),
+              const SizedBox(height: 32),
+              TextButton(
+                onPressed: () {}, // TODO
+                child:
+                    const Text('Log out', style: TextStyle(color: Colors.red)),
+              ),
+              TextButton(
+                onPressed: () {}, // TODO
+                child: const Text('Delete Account',
+                    style: TextStyle(color: Colors.red)),
+              ),
+            ],
           );
         }
 
-        // ProfileLoading 또는 ProfileError 상태일 땐 빈 화면 반환
-        return const SizedBox.shrink();
+        return Scaffold(
+          appBar: AppBar(title: const Text('My Page')),
+          body: content,
+        );
       },
+    );
+  }
+
+  Widget _trailingText(String text) {
+    return Row(
+      mainAxisSize: MainAxisSize.min,
+      children: [
+        Text(text, style: const TextStyle(color: Colors.grey)),
+        const Icon(Icons.arrow_forward_ios_rounded,
+            size: 14, color: Colors.grey),
+      ],
     );
   }
 }
