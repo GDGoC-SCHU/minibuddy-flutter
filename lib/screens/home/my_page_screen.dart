@@ -4,10 +4,17 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/blocs/profile/profile_bloc.dart';
 import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
+import 'package:package_info_plus/package_info_plus.dart';
 
-class MyPageScreen extends StatelessWidget {
+class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
 
+  @override
+  State<MyPageScreen> createState() => _MyPageScreenState();
+}
+
+class _MyPageScreenState extends State<MyPageScreen> {
+  @override
   void _navigateAndPatch(BuildContext context, String field) async {
     final bloc = context.read<ProfileBloc>();
     final result = await context.push('/edit/$field');
@@ -32,89 +39,144 @@ class MyPageScreen extends StatelessWidget {
         if (state is ProfileLoaded) {
           final profile = state.profile;
 
-          content = ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          content = Column(
             children: [
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Profile',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
+              Expanded(
+                child: SingleChildScrollView(
+                  physics: const NeverScrollableScrollPhysics(),
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'Profile',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Pretendard',
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: const Text('Account Info',
+                              style: TextStyle(
+                                  fontSize: 16, fontFamily: 'Pretendard')),
+                          trailing: Text(
+                            profile.email,
+                            style: TextStyle(
+                                color: Colors.grey[700],
+                                fontFamily: 'Pretendard',
+                                fontSize: 16),
+                          ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: const Text('Change Nickname',
+                              style: TextStyle(
+                                  fontSize: 16, fontFamily: 'Pretendard')),
+                          trailing: _trailingText(profile.name),
+                          onTap: () => _navigateAndPatch(context, 'nickname'),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: const Text('Change Birthday',
+                              style: TextStyle(
+                                  fontSize: 16, fontFamily: 'Pretendard')),
+                          trailing: _trailingText(
+                            '${profile.birthdate.year}.${profile.birthdate.month.toString().padLeft(2, '0')}.${profile.birthdate.day.toString().padLeft(2, '0')}',
+                          ),
+                          onTap: () => _navigateAndPatch(context, 'birthday'),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: const Text('Change Keywords',
+                              style: TextStyle(
+                                  fontSize: 16, fontFamily: 'Pretendard')),
+                          trailing: _trailingText(profile.keywords.join(', ')),
+                          onTap: () => _navigateAndPatch(context, 'keyword'),
+                        ),
+                        const SizedBox(height: 32),
+                        const Padding(
+                          padding: EdgeInsets.only(bottom: 8),
+                          child: Text(
+                            'Settings',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              fontFamily: 'Pretendard',
+                            ),
+                          ),
+                        ),
+                        ListTile(
+                          dense: true,
+                          title: const Text('Open Source Licenses',
+                              style: TextStyle(
+                                  fontSize: 16, fontFamily: 'Pretendard')),
+                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
+                              size: 14, color: Colors.grey),
+                          onTap: () => showLicensePage(context: context),
+                        ),
+                        const ListTile(
+                          dense: true,
+                          title: Text(
+                            'App Version',
+                            style: TextStyle(
+                                color: Color.fromARGB(255, 0, 0, 0),
+                                fontSize: 16,
+                                fontFamily: 'Pretendard'),
+                          ),
+                          trailing: Text(
+                            '1.0.0',
+                            style: TextStyle(
+                                color: Colors.grey,
+                                fontSize: 16,
+                                fontFamily: 'Pretendard'),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
                 ),
               ),
-              ListTile(
-                dense: true,
-                title: const Text('Account Info'),
-                trailing: Text(profile.email,
-                    style: TextStyle(color: Colors.grey[700])),
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Change Nickname'),
-                trailing: _trailingText(profile.name),
-                onTap: () => _navigateAndPatch(context, 'nickname'),
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Change Birthday'),
-                trailing: _trailingText(
-                  '${profile.birthdate.year}.${profile.birthdate.month.toString().padLeft(2, '0')}.${profile.birthdate.day.toString().padLeft(2, '0')}',
+              Padding(
+                padding: const EdgeInsets.fromLTRB(24, 0, 24, 20),
+                child: Column(
+                  children: [
+                    const SizedBox(height: 32),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Log out',
+                        style: TextStyle(
+                            color: Colors.red, fontFamily: 'Pretendard'),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {},
+                      child: const Text(
+                        'Delete Account',
+                        style: TextStyle(
+                            color: Colors.red, fontFamily: 'Pretendard'),
+                      ),
+                    ),
+                  ],
                 ),
-                onTap: () => _navigateAndPatch(context, 'birthday'),
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Change Keywords'),
-                trailing: _trailingText(profile.keywords.join(', ')),
-                onTap: () => _navigateAndPatch(context, 'keyword'),
-              ),
-              const SizedBox(height: 32),
-              const Padding(
-                padding: EdgeInsets.only(bottom: 8),
-                child: Text(
-                  'Settings',
-                  style: TextStyle(fontSize: 15, fontWeight: FontWeight.bold),
-                ),
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Open Source Licenses'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                    size: 14, color: Colors.grey),
-                onTap: () => showLicensePage(context: context),
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Privacy Policy'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                    size: 14, color: Colors.grey),
-                onTap: () {},
-              ),
-              ListTile(
-                dense: true,
-                title: const Text('Terms of Use'),
-                trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                    size: 14, color: Colors.grey),
-                onTap: () {},
-              ),
-              const SizedBox(height: 32),
-              TextButton(
-                onPressed: () {}, // TODO
-                child:
-                    const Text('Log out', style: TextStyle(color: Colors.red)),
-              ),
-              TextButton(
-                onPressed: () {}, // TODO
-                child: const Text('Delete Account',
-                    style: TextStyle(color: Colors.red)),
               ),
             ],
           );
         }
 
         return Scaffold(
-          appBar: AppBar(title: const Text('My Page')),
-          body: content,
+          appBar: AppBar(
+            title: const Text('My Page',
+                style: TextStyle(fontFamily: 'Pretendard')),
+          ),
+          body: SafeArea(child: content),
         );
       },
     );
@@ -124,7 +186,9 @@ class MyPageScreen extends StatelessWidget {
     return Row(
       mainAxisSize: MainAxisSize.min,
       children: [
-        Text(text, style: const TextStyle(color: Colors.grey)),
+        Text(text,
+            style: const TextStyle(
+                color: Colors.grey, fontFamily: 'Pretendard', fontSize: 16)),
         const Icon(Icons.arrow_forward_ios_rounded,
             size: 14, color: Colors.grey),
       ],
