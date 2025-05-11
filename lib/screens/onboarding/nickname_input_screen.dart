@@ -33,7 +33,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
     OnboardingState().nickname = _nickname; // 입력값 저장
 
     if (widget.isFromEdit) {
-      Navigator.pop(context); // 마이페이지로 복귀
+      Navigator.pop(context, _nickname);
     } else {
       context.push('/onboarding/birthday'); // 온보딩 진행
     }

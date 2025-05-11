@@ -50,7 +50,7 @@ class _BirthdayInputScreenState extends State<BirthdayInputScreen> {
     OnboardingState().birthdate = formatted; // 생일을 문자열로 저장
 
     if (widget.isFromEdit) {
-      Navigator.pop(context); // 마이페이지로 복귀
+      Navigator.pop(context, _selectedDate); // 마이페이지로 복귀
     } else {
       context.push('/onboarding/keyword'); // 다음 온보딩 화면으로 이동
     }

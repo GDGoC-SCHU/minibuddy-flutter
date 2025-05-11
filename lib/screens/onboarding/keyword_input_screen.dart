@@ -51,7 +51,7 @@ class _KeywordInputScreenState extends State<KeywordInputScreen> {
     OnboardingState().keywords = _selected;
 
     if (widget.isFromEdit) {
-      Navigator.pop(context); // 마이페이지에서 복귀
+      Navigator.pop(context, _selected); // 마이페이지에서 복귀
     } else {
       await handleRequest(
         context: context,
