@@ -26,10 +26,14 @@ class _UserScreenState extends State<UserScreen> {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UserLoaded) {
             final status = state.status;
-            final flow = state.flow;
-            final distribution = state.distribution;
 
-            return _buildContent(status, flow, distribution);
+            final flow = state.flow; // List<EmotionFlowModel> 타입
+
+            final distribution =
+                state.distribution; // EmotionDistributionModel 타입
+
+            return _buildContent(
+                status, flow, distribution); // flow와 distribution 전달
           }
 
           return const SizedBox.shrink();
@@ -40,7 +44,7 @@ class _UserScreenState extends State<UserScreen> {
 
   Widget _buildContent(
     UserStatusModel status,
-    EmotionFlowModel flow,
+    List<EmotionFlowModel> flow, // List<EmotionFlowModel>로 수정
     EmotionDistributionModel distribution,
   ) {
     return ListView(
@@ -54,24 +58,24 @@ class _UserScreenState extends State<UserScreen> {
         Text('총 채팅 수: ${status.chatCount}'),
         const Divider(),
 
-        // // 감정 흐름 (Emotion Flow) 그래프 그리기
-        // const Text('감정 흐름 (날짜별 우울, 불안, 스트레스 점수)'),
-        // SizedBox(
-        //   height: 200,
-        //   child: CustomPaint(
-        //     painter: EmotionFlowPainter(flow),
-        //   ),
-        // ),
-        // const Divider(),
+        // 감정 흐름 (Emotion Flow) 그래프 그리기
+        const Text('감정 흐름 (날짜별 우울, 불안, 스트레스 점수)'),
+        SizedBox(
+          height: 200,
+          child: CustomPaint(
+            painter: EmotionFlowPainter(flow), // List<EmotionFlowModel> 전달
+          ),
+        ),
+        const Divider(),
 
-        // // 감정 분포 (Emotion Distribution) 그래프 그리기
-        // const Text('감정 분포 (정상, 우울, 불안, 스트레스)'),
-        // SizedBox(
-        //   height: 200,
-        //   child: CustomPaint(
-        //     painter: EmotionDistributionPainter(distribution),
-        //   ),
-        // ),
+        // 감정 분포 (Emotion Distribution) 그래프 그리기
+        const Text('감정 분포 (정상, 우울, 불안, 스트레스)'),
+        SizedBox(
+          height: 200,
+          child: CustomPaint(
+            painter: EmotionDistributionPainter(distribution),
+          ),
+        ),
       ],
     );
   }

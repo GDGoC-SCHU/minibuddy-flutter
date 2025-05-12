@@ -18,10 +18,10 @@ Future<UserStatusModel> fetchUserStatus() async {
 }
 
 // 감정 흐름 조회
-Future<EmotionFlowModel> fetchEmotionFlow() async {
+Future<Map<String, dynamic>> fetchEmotionFlowRaw() async {
   try {
     final res = await dio.get('/api/user/emotion/flow');
-    return EmotionFlowModel.fromJson(res.data);
+    return res.data as Map<String, dynamic>;
   } on DioException catch (e) {
     rethrow;
   }

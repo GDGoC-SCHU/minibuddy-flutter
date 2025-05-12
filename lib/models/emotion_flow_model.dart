@@ -11,19 +11,29 @@ class EmotionFlowModel {
     required this.strScore,
   });
 
+  // 단일 JSON 객체 → 객체 변환 (팩토리 생성자)
   factory EmotionFlowModel.fromJson(Map<String, dynamic> json) {
     return EmotionFlowModel(
-      date: json['date'] ?? '', // null 값 처리
-      depScore: json['dep_score'] ?? 0, // null 값 처리
-      anxScore: json['anx_score'] ?? 0, // null 값 처리
-      strScore: json['str_score'] ?? 0, // null 값 처리
+      date: (json['date'] as String?) ?? 'N/A', // 명시적 타입 캐스팅 + 기본값
+      depScore: (json['dep_score'] as int?) ?? 0,
+      anxScore: (json['anx_score'] as int?) ?? 0,
+      strScore: (json['str_score'] as int?) ?? 0,
     );
   }
 
-  static List<EmotionFlowModel> fromJsonList(List<dynamic> jsonList) {
-    return jsonList.map((json) => EmotionFlowModel.fromJson(json)).toList();
+  // JSON 전체 응답 → 객체 리스트 변환 (정적 메서드)
+  static List<EmotionFlowModel> fromJsonList(Map<String, dynamic> json) {
+    // 1. 'data' 필드 추출 (타입 캐스팅 + null 처리)
+    final rawData = json['data'] as List<dynamic>? ?? [];
+
+    // 2. 각 항목을 안전하게 변환
+    return rawData.map((item) {
+      final data = item as Map<String, dynamic>? ?? {};
+      return EmotionFlowModel.fromJson(data);
+    }).toList();
   }
 
+  // 객체 → JSON 변환 (스네이크 케이스 유지)
   Map<String, dynamic> toJson() => {
         'date': date,
         'dep_score': depScore,

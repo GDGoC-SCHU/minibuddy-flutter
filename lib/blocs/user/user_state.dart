@@ -10,7 +10,7 @@ class UserLoading extends UserState {}
 
 class UserLoaded extends UserState {
   final UserStatusModel status;
-  final EmotionFlowModel flow;
+  final List<EmotionFlowModel> flow;
   final EmotionDistributionModel distribution;
 
   UserLoaded(

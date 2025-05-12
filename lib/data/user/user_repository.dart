@@ -28,20 +28,21 @@ class UserRepository {
   }
 
   // 감정 흐름 조회
-  Future<EmotionFlowModel> getFlow() async {
-    EmotionFlowModel? result;
+  Future<List<EmotionFlowModel>> getFlow() async {
+    List<EmotionFlowModel>? result;
 
-    await handleRequest<EmotionFlowModel>(
+    await handleRequest<Map<String, dynamic>>(
+      // 실제 응답 타입 명시
       context: context,
-      fetch: fetchEmotionFlow, // API 호출 함수
-      onSuccess: (data) {
-        result = data;
-        debugPrint('🙌GET emotion flow: ${result?.toJson()}');
+      fetch: fetchEmotionFlowRaw, // Raw 데이터 가져오기
+      onSuccess: (responseData) {
+        result = EmotionFlowModel.fromJsonList(responseData); // 모델 변환
+        debugPrint('GET emotion flow: ${result?.length} items loaded');
       },
       retry: () => getFlow(),
     );
 
-    return result!; // null이 올 수 없게 보장된 흐름
+    return result ?? [];
   }
 
   // 감정 분포 조회

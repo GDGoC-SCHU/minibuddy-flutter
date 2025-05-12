@@ -22,7 +22,7 @@ class UserBloc extends Bloc<UserEvent, UserState> {
         ]);
 
         final status = results[0] as UserStatusModel;
-        final flow = results[1] as EmotionFlowModel;
+        final flow = results[1] as List<EmotionFlowModel>;
         final dist = results[2] as EmotionDistributionModel;
 
         // 데이터 로드 성공 시 상태를 UserLoaded로 업데이트
