@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:minibuddy/models/emotion_distribution_model.dart';
+import 'dart:math';
 
 class EmotionDistributionPainter extends CustomPainter {
   final EmotionDistributionModel distribution;
@@ -8,47 +9,62 @@ class EmotionDistributionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    final paintNormal = Paint()..color = Colors.green;
-    final paintDep = Paint()..color = Colors.blue;
-    final paintAnx = Paint()..color = Colors.orange;
-    final paintStr = Paint()..color = Colors.red;
+    const double gapAngle = 2.0; // 섹션 간 간격 각도
+    final center = Offset(size.width / 2, size.height / 2);
+    final radius = size.width * 0.30; // 반경 10% 축소
 
-    int total = distribution.normal +
-        distribution.dep +
-        distribution.anx +
-        distribution.str;
+    // 색상 정의
+    final paints = {
+      'normal': Paint()..color = Colors.green,
+      'dep': Paint()..color = Colors.blue,
+      'anx': Paint()..color = Colors.orange,
+      'str': Paint()..color = Colors.red,
+    };
 
-    // Calculate proportions
-    double normalRatio = distribution.normal / total;
-    double depRatio = distribution.dep / total;
-    double anxRatio = distribution.anx / total;
-    double strRatio = distribution.str / total;
+    // 데이터 유효성 검사
+    final total = (distribution.normal +
+            distribution.dep +
+            distribution.anx +
+            distribution.str)
+        .clamp(1, double.maxFinite.toInt()); // 0 division 방지
+
+    // 비율 계산
+    final ratios = {
+      'normal': distribution.normal / total,
+      'dep': distribution.dep / total,
+      'anx': distribution.anx / total,
+      'str': distribution.str / total,
+    };
 
     double startAngle = -90.0;
+    final rect = Rect.fromCircle(center: center, radius: radius);
 
-    final rect = Rect.fromCircle(
-        center: Offset(size.width / 2, size.height / 2),
-        radius: size.width / 2);
+    // 각 섹션 그리기
+    for (final entry in ratios.entries) {
+      if (entry.value > 0) {
+        final sweepAngle = (entry.value * 360) - gapAngle;
+        canvas.drawArc(
+          rect,
+          startAngle * pi / 180,
+          sweepAngle * pi / 180,
+          true,
+          paints[entry.key]!,
+        );
+        startAngle += sweepAngle + gapAngle;
+      }
+    }
 
-    // Draw pie chart segments
-    canvas.drawArc(rect, startAngle * 3.14159 / 180, normalRatio * 2 * 3.14159,
-        true, paintNormal);
-    startAngle += normalRatio * 360;
-
-    canvas.drawArc(rect, startAngle * 3.14159 / 180, depRatio * 2 * 3.14159,
-        true, paintDep);
-    startAngle += depRatio * 360;
-
-    canvas.drawArc(rect, startAngle * 3.14159 / 180, anxRatio * 2 * 3.14159,
-        true, paintAnx);
-    startAngle += anxRatio * 360;
-
-    canvas.drawArc(rect, startAngle * 3.14159 / 180, strRatio * 2 * 3.14159,
-        true, paintStr);
+    // 경계선 추가 (작은 화면 가시성 향상)
+    canvas.drawCircle(
+      center,
+      radius,
+      Paint()
+        ..color = Colors.white
+        ..strokeWidth = 2
+        ..style = PaintingStyle.stroke,
+    );
   }
 
   @override
-  bool shouldRepaint(CustomPainter oldDelegate) {
-    return false;
-  }
+  bool shouldRepaint(CustomPainter oldDelegate) => true; // 업데이트 활성화
 }

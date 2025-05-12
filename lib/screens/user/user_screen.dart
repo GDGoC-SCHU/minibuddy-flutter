@@ -19,23 +19,21 @@ class _UserScreenState extends State<UserScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text('감정 상태')),
+      appBar: AppBar(
+        title: const Text('Emotional Status Analysis'),
+        elevation: 0, // Remove the app bar shadow
+      ),
       body: BlocBuilder<UserBloc, UserState>(
         builder: (context, state) {
           if (state is UserLoading) {
             return const Center(child: CircularProgressIndicator());
           } else if (state is UserLoaded) {
-            final status = state.status;
-
-            final flow = state.flow; // List<EmotionFlowModel> 타입
-
-            final distribution =
-                state.distribution; // EmotionDistributionModel 타입
-
             return _buildContent(
-                status, flow, distribution); // flow와 distribution 전달
+              state.status,
+              state.flow,
+              state.distribution,
+            );
           }
-
           return const SizedBox.shrink();
         },
       ),
@@ -44,39 +42,132 @@ class _UserScreenState extends State<UserScreen> {
 
   Widget _buildContent(
     UserStatusModel status,
-    List<EmotionFlowModel> flow, // List<EmotionFlowModel>로 수정
+    List<EmotionFlowModel> flow,
     EmotionDistributionModel distribution,
   ) {
-    return ListView(
+    return SingleChildScrollView(
+      // Scrollable content area
       padding: const EdgeInsets.all(16),
-      children: [
-        // 사용자 상태 텍스트 출력
-        Text('우울 점수: ${status.depScore}'),
-        Text('불안 점수: ${status.anxScore}'),
-        Text('스트레스 점수: ${status.strScore}'),
-        Text('기억력 점수: ${status.mciScore}'),
-        Text('총 채팅 수: ${status.chatCount}'),
-        const Divider(),
+      child: Column(
+        children: [
+          _buildStatusCard(status),
+          const SizedBox(height: 12),
+          _buildFlowChart(flow),
+          const SizedBox(height: 12),
+          _buildDistributionChart(distribution),
+        ],
+      ),
+    );
+  }
 
-        // 감정 흐름 (Emotion Flow) 그래프 그리기
-        const Text('감정 흐름 (날짜별 우울, 불안, 스트레스 점수)'),
-        SizedBox(
-          height: 200,
-          child: CustomPaint(
-            painter: EmotionFlowPainter(flow), // List<EmotionFlowModel> 전달
-          ),
+  // Status display card
+  Widget _buildStatusCard(UserStatusModel status) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '💬 User Status',
+              style: TextStyle(
+                fontSize: 18,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 16),
+            _buildStatusRow('Depression Score', status.depScore),
+            _buildStatusRow('Anxiety Score', status.anxScore),
+            _buildStatusRow('Stress Score', status.strScore),
+            _buildStatusRow('Memory Score', status.mciScore),
+            _buildStatusRow('Total Chats', status.chatCount),
+          ],
         ),
-        const Divider(),
+      ),
+    );
+  }
 
-        // 감정 분포 (Emotion Distribution) 그래프 그리기
-        const Text('감정 분포 (정상, 우울, 불안, 스트레스)'),
-        SizedBox(
-          height: 200,
-          child: CustomPaint(
-            painter: EmotionDistributionPainter(distribution),
+  // Common status row widget
+  Widget _buildStatusRow(String label, dynamic value) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(vertical: 6),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Text(label, style: TextStyle(color: Colors.grey[600])),
+          Text(
+            '$value',
+            style: const TextStyle(
+              fontWeight: FontWeight.w600,
+              fontSize: 15,
+            ),
           ),
+        ],
+      ),
+    );
+  }
+
+  // Emotion flow chart section
+  Widget _buildFlowChart(List<EmotionFlowModel> flow) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '📈 Emotion Flow',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: EmotionFlowPainter(flow),
+              ),
+            ),
+          ],
         ),
-      ],
+      ),
+    );
+  }
+
+  // Emotion distribution chart section
+  Widget _buildDistributionChart(EmotionDistributionModel distribution) {
+    return Card(
+      elevation: 4,
+      margin: EdgeInsets.zero,
+      child: Padding(
+        padding: const EdgeInsets.all(16),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Text(
+              '📊 Emotion Distribution',
+              style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 12),
+            SizedBox(
+              height: 200,
+              width: double.infinity,
+              child: CustomPaint(
+                painter: EmotionDistributionPainter(distribution),
+              ),
+            ),
+          ],
+        ),
+      ),
     );
   }
 }
