@@ -9,17 +9,17 @@ class EmotionFlowPainter extends CustomPainter {
   @override
   void paint(Canvas canvas, Size size) {
     final depPaint = Paint()
-      ..color = Colors.blue // 우울감(Depression) 색상
+      ..color = Colors.blue // Depression color
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
     final anxPaint = Paint()
-      ..color = Colors.green // 불안감(Anxiety) 색상
+      ..color = Colors.green // Anxiety color
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
     final strPaint = Paint()
-      ..color = Colors.red // 스트레스(Stress) 색상
+      ..color = Colors.red // Stress color
       ..strokeWidth = 2
       ..style = PaintingStyle.stroke;
 
@@ -33,10 +33,12 @@ class EmotionFlowPainter extends CustomPainter {
     double graphTopPosition =
         size.height * 0.2; // Graph starts 20% from the top
 
+    double xSpacing = size.width /
+        (flow.length + 1); // Dynamically calculate space between data points
+
     for (int i = 0; i < flow.length; i++) {
       final data = flow[i]; // Accessing each EmotionFlowModel instance
-      final x = (i + 1) *
-          (size.width / (flow.length + 1)); // Distribute the points evenly
+      final x = (i + 1) * xSpacing; // Distribute the points evenly
 
       // Adjusting Y values according to new graph height
       final depY = graphTopPosition + (data.depScore * (graphHeight / 10));
@@ -52,6 +54,24 @@ class EmotionFlowPainter extends CustomPainter {
         anxPath.lineTo(x, anxY);
         strPath.lineTo(x, strY);
       }
+
+      // Draw the date labels below the x-axis
+      final dateLabel = TextSpan(
+        text: data.date, // Assuming EmotionFlowModel has a 'date' field
+        style: TextStyle(color: Colors.black, fontSize: 10),
+      );
+
+      final textPainter = TextPainter(
+        text: dateLabel,
+        textAlign: TextAlign.center,
+        textDirection: TextDirection.ltr,
+      )..layout(minWidth: 0, maxWidth: xSpacing);
+
+      // Positioning the date labels below the graph
+      textPainter.paint(
+        canvas,
+        Offset(x - textPainter.width / 2, size.height - 20), // Below graph
+      );
     }
 
     // Draw the paths for each emotion category
@@ -68,34 +88,35 @@ class EmotionFlowPainter extends CustomPainter {
     final strLabel = TextSpan(text: 'Stress', style: textStyle);
 
     final textPainterDep = TextPainter(
-        text: depLabel,
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: size.width);
+      text: depLabel,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: size.width);
     final textPainterAnx = TextPainter(
-        text: anxLabel,
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: size.width);
+      text: anxLabel,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: size.width);
     final textPainterStr = TextPainter(
-        text: strLabel,
-        textAlign: TextAlign.center,
-        textDirection: TextDirection.ltr)
-      ..layout(minWidth: 0, maxWidth: size.width);
+      text: strLabel,
+      textAlign: TextAlign.center,
+      textDirection: TextDirection.ltr,
+    )..layout(minWidth: 0, maxWidth: size.width);
 
     // Positioning the labels just above the graph
     textPainterDep.paint(
-        canvas,
-        Offset(size.width / 4 - textPainterDep.width / 2,
-            graphTopPosition - 15)); // Depression label
+      canvas,
+      Offset(size.width / 4 - textPainterDep.width / 2, graphTopPosition - 15),
+    ); // Depression label
     textPainterAnx.paint(
-        canvas,
-        Offset(size.width / 2 - textPainterAnx.width / 2,
-            graphTopPosition - 15)); // Anxiety label
+      canvas,
+      Offset(size.width / 2 - textPainterAnx.width / 2, graphTopPosition - 15),
+    ); // Anxiety label
     textPainterStr.paint(
-        canvas,
-        Offset(3 * size.width / 4 - textPainterStr.width / 2,
-            graphTopPosition - 15)); // Stress label
+      canvas,
+      Offset(
+          3 * size.width / 4 - textPainterStr.width / 2, graphTopPosition - 15),
+    ); // Stress label
   }
 
   @override
