@@ -20,10 +20,15 @@ import 'package:minibuddy/data/profile/profile_repository.dart';
 
 // User
 import 'package:minibuddy/screens/user/user_screen.dart';
-import 'package:minibuddy/screens/user/anxiety_detail_screen.dart';
-import 'package:minibuddy/screens/user/depression_detail_screen.dart';
-import 'package:minibuddy/screens/user/stress_detail_screen.dart';
-import 'package:minibuddy/screens/user/memory_detail_screen.dart';
+
+import 'package:minibuddy/blocs/user/user_bloc.dart';
+import 'package:minibuddy/blocs/user/user_event.dart';
+import 'package:minibuddy/data/user/user_repository.dart';
+
+import 'package:minibuddy/screens/history/anxiety_detail_screen.dart';
+import 'package:minibuddy/screens/history/depression_detail_screen.dart';
+import 'package:minibuddy/screens/history/stress_detail_screen.dart';
+import 'package:minibuddy/screens/history/memory_detail_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -78,7 +83,18 @@ final GoRouter router = GoRouter(
     GoRoute(path: '/home', builder: (_, __) => const HomeScreen()),
 
     // User
-    GoRoute(path: '/user', builder: (_, __) => const UserScreen()),
+    GoRoute(
+      path: '/user',
+      builder: (context, state) {
+        return BlocProvider(
+          create: (_) => UserBloc(
+            repository: UserRepository(context),
+          )..add(LoadUserData()),
+          child: const UserScreen(),
+        );
+      },
+    ),
+
     GoRoute(
         path: '/user/anxiety', builder: (_, __) => const AnxietyDetailScreen()),
     GoRoute(
