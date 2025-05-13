@@ -29,6 +29,7 @@ import 'package:minibuddy/screens/history/anxiety_detail_screen.dart';
 import 'package:minibuddy/screens/history/depression_detail_screen.dart';
 import 'package:minibuddy/screens/history/stress_detail_screen.dart';
 import 'package:minibuddy/screens/history/memory_detail_screen.dart';
+import 'package:minibuddy/utils/api_client.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -96,7 +97,9 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-        path: '/user/anxiety', builder: (_, __) => const AnxietyDetailScreen()),
+      path: '/user/anxiety',
+      builder: (context, state) => const AnxietyDetailScreen(), // 그냥 화면만 넘김
+    ),
     GoRoute(
         path: '/user/depression',
         builder: (_, __) => const DepressionDetailScreen()),
