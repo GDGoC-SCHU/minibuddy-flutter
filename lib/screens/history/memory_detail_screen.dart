@@ -1,77 +1,87 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:minibuddy/blocs/history/history_bloc.dart';
-import 'package:minibuddy/blocs/history/history_event.dart';
-import 'package:minibuddy/blocs/history/history_status.dart';
 import 'package:minibuddy/data/history/history_api.dart';
 import 'package:minibuddy/data/history/history_repository.dart';
+import 'package:minibuddy/models/history_models.dart';
 import 'package:minibuddy/utils/api_client.dart';
+import 'package:minibuddy/utils/handle_request.dart';
 
-class MemoryDetailScreen extends StatelessWidget {
+class MemoryDetailScreen extends StatefulWidget {
   const MemoryDetailScreen({super.key});
 
   @override
+  State<MemoryDetailScreen> createState() => _MemoryDetailScreenState();
+}
+
+class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
+  final _repository = HistoryRepository(HistoryApi(ApiClient.instance));
+  List<MemoryHistory> _history = [];
+  bool _isLoading = true;
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchHistory();
+  }
+
+  void _fetchHistory() {
+    setState(() => _isLoading = true);
+    handleRequest<List<MemoryHistory>>(
+      context: context,
+      fetch: () => _repository.getMemoryHistory(),
+      onSuccess: (data) {
+        setState(() {
+          _history = data;
+          _isLoading = false;
+        });
+      },
+      retry: _fetchHistory,
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (_) => HistoryBloc(
-        HistoryRepository(HistoryApi(ApiClient.instance)),
-      )..add(FetchMemoryHistory()),
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Memory Check History'),
-          automaticallyImplyLeading: true,
-        ),
-        body: BlocBuilder<HistoryBloc, HistoryState>(
-          builder: (context, state) {
-            if (state is HistoryLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is MemoryHistoryLoaded) {
-              final history = state.data;
-
-              if (history.isEmpty) {
-                return const Center(child: Text("No memory history found."));
-              }
-
-              return ListView.builder(
-                padding: const EdgeInsets.all(16),
-                itemCount: history.length,
-                itemBuilder: (_, index) {
-                  final item = history[index];
-                  return Container(
-                    margin: const EdgeInsets.symmetric(vertical: 8),
-                    padding: const EdgeInsets.all(12),
-                    decoration: BoxDecoration(
-                      color: Colors.yellow[50],
-                      borderRadius: BorderRadius.circular(12),
-                    ),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text('Q: ${item.question}',
-                            style: const TextStyle(fontSize: 16)),
-                        const SizedBox(height: 4),
-                        Text('A: ${item.answer}',
-                            style: const TextStyle(fontSize: 16)),
-                        const SizedBox(height: 4),
-                        Text('🧠 ${item.mciReason}',
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
-                        const SizedBox(height: 4),
-                        Text(item.date,
-                            style: const TextStyle(
-                                fontSize: 12, color: Colors.grey)),
-                      ],
-                    ),
-                  );
-                },
-              );
-            } else if (state is HistoryError) {
-              return Center(child: Text('Error: ${state.message}'));
-            }
-            return const SizedBox.shrink();
-          },
-        ),
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Memory Check History'),
+        automaticallyImplyLeading: true,
       ),
+      body: _isLoading
+          ? const Center(child: CircularProgressIndicator())
+          : _history.isEmpty
+              ? const Center(child: Text("No memory history found."))
+              : ListView.builder(
+                  padding: const EdgeInsets.all(16),
+                  itemCount: _history.length,
+                  itemBuilder: (_, index) {
+                    final item = _history[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 8),
+                      padding: const EdgeInsets.all(12),
+                      decoration: BoxDecoration(
+                        color: Colors.yellow[50],
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text('Q: ${item.question}',
+                              style: const TextStyle(fontSize: 16)),
+                          const SizedBox(height: 4),
+                          Text('A: ${item.answer}',
+                              style: const TextStyle(fontSize: 16)),
+                          const SizedBox(height: 4),
+                          Text('🧠 ${item.mciReason}',
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey)),
+                          const SizedBox(height: 4),
+                          Text(item.date,
+                              style: const TextStyle(
+                                  fontSize: 12, color: Colors.grey)),
+                        ],
+                      ),
+                    );
+                  },
+                ),
     );
   }
 }

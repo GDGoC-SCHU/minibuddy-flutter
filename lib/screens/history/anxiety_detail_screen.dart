@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:minibuddy/blocs/history/history_bloc.dart';
 import 'package:minibuddy/blocs/history/history_event.dart';
-import 'package:minibuddy/blocs/history/history_status.dart';
 import 'package:minibuddy/data/history/history_api.dart';
 import 'package:minibuddy/data/history/history_repository.dart';
 import 'package:minibuddy/screens/history/emotion_history_builder.dart';
@@ -22,7 +21,7 @@ class AnxietyDetailScreen extends StatelessWidget {
           title: const Text('Anxiety History'),
           automaticallyImplyLeading: true,
         ),
-        body: EmotionHistoryBuilder(),
+        body: const EmotionHistoryBuilder(type: "ANXIETY"),
       ),
     );
   }

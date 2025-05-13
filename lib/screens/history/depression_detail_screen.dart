@@ -21,7 +21,7 @@ class DepressionDetailScreen extends StatelessWidget {
           title: const Text('Depression History'),
           automaticallyImplyLeading: true,
         ),
-        body: EmotionHistoryBuilder(),
+        body: const EmotionHistoryBuilder(type: "DEPRESSION"),
       ),
     );
   }

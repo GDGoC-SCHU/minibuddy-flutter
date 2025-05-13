@@ -1,59 +1,72 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:minibuddy/blocs/history/history_bloc.dart';
-import 'package:minibuddy/blocs/history/history_status.dart';
+import 'package:minibuddy/data/history/history_api.dart';
+import 'package:minibuddy/data/history/history_repository.dart';
+import 'package:minibuddy/models/history_models.dart';
+import 'package:minibuddy/utils/api_client.dart';
+import 'package:minibuddy/utils/handle_request.dart';
 
-class EmotionHistoryBuilder extends StatelessWidget {
-  const EmotionHistoryBuilder({super.key});
+class EmotionHistoryBuilder extends StatefulWidget {
+  final String type; // "ANXIETY", "DEPRESSION", "STRESS"
+
+  const EmotionHistoryBuilder({super.key, required this.type});
+
+  @override
+  State<EmotionHistoryBuilder> createState() => _EmotionHistoryBuilderState();
+}
+
+class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
+  final _repository = HistoryRepository(HistoryApi(ApiClient.instance));
+  List<EmotionHistory> _history = [];
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchHistory();
+  }
+
+  void _fetchHistory() {
+    handleRequest<List<EmotionHistory>>(
+      context: context,
+      fetch: () => _repository.getEmotionHistory(widget.type),
+      onSuccess: (data) {
+        setState(() => _history = data);
+      },
+      retry: _fetchHistory,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<HistoryBloc, HistoryState>(
-      builder: (context, state) {
-        if (state is HistoryLoading) {
-          return const Center(child: CircularProgressIndicator());
-        } else if (state is EmotionHistoryLoaded) {
-          final history = state.data;
-
-          if (history.isEmpty) {
-            return const Center(child: Text("No records found."));
-          }
-
-          return ListView.builder(
-            padding: const EdgeInsets.all(16),
-            itemCount: history.length,
-            itemBuilder: (_, index) {
-              final item = history[index];
-              return Align(
-                alignment: Alignment.centerRight,
-                child: Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6),
-                  padding: const EdgeInsets.all(12),
-                  constraints: BoxConstraints(
-                    maxWidth: MediaQuery.of(context).size.width * 0.75,
-                  ),
-                  decoration: BoxDecoration(
-                    color: Colors.lightBlue[50],
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.end,
-                    children: [
-                      Text(item.message, style: const TextStyle(fontSize: 16)),
-                      const SizedBox(height: 4),
-                      Text(item.date,
-                          style: const TextStyle(
-                              fontSize: 12, color: Colors.grey)),
-                    ],
-                  ),
+    return ListView.builder(
+      padding: const EdgeInsets.all(16),
+      itemCount: _history.length,
+      itemBuilder: (_, index) {
+        final item = _history[index];
+        return Align(
+          alignment: Alignment.centerRight,
+          child: Container(
+            margin: const EdgeInsets.symmetric(vertical: 6),
+            padding: const EdgeInsets.all(12),
+            constraints: BoxConstraints(
+              maxWidth: MediaQuery.of(context).size.width * 0.75,
+            ),
+            decoration: BoxDecoration(
+              color: Colors.lightBlue[50],
+              borderRadius: BorderRadius.circular(12),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              children: [
+                Text(item.message, style: const TextStyle(fontSize: 16)),
+                const SizedBox(height: 4),
+                Text(
+                  item.date,
+                  style: const TextStyle(fontSize: 12, color: Colors.grey),
                 ),
-              );
-            },
-          );
-        } else if (state is HistoryError) {
-          return Center(child: Text('Error: ${state.message}'));
-        }
-        return const SizedBox.shrink();
+              ],
+            ),
+          ),
+        );
       },
     );
   }

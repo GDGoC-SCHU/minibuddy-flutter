@@ -21,7 +21,7 @@ class StressDetailScreen extends StatelessWidget {
           title: const Text('Stress History'),
           automaticallyImplyLeading: true,
         ),
-        body: EmotionHistoryBuilder(),
+        body: const EmotionHistoryBuilder(type: "STRESS"),
       ),
     );
   }
