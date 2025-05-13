@@ -23,6 +23,18 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
     _fetchHistory();
   }
 
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    // 뒤로가기로 복귀 시 로딩이 꺼지지 않는 문제 방지
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      if (ModalRoute.of(context)?.isCurrent == true && _isLoading) {
+        setState(() => _isLoading = false);
+      }
+    });
+  }
+
   void _fetchHistory() {
     setState(() => _isLoading = true);
     handleRequest<List<MemoryHistory>>(
@@ -34,7 +46,10 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
           _isLoading = false;
         });
       },
-      retry: _fetchHistory,
+      retry: () {
+        setState(() => _isLoading = false); // 실패 후 복귀 시 false 처리
+        _fetchHistory(); // 그리고 재시도
+      },
     );
   }
 
@@ -47,41 +62,39 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
       ),
       body: _isLoading
           ? const Center(child: CircularProgressIndicator())
-          : _history.isEmpty
-              ? const Center(child: Text("No memory history found."))
-              : ListView.builder(
-                  padding: const EdgeInsets.all(16),
-                  itemCount: _history.length,
-                  itemBuilder: (_, index) {
-                    final item = _history[index];
-                    return Container(
-                      margin: const EdgeInsets.symmetric(vertical: 8),
-                      padding: const EdgeInsets.all(12),
-                      decoration: BoxDecoration(
-                        color: Colors.yellow[50],
-                        borderRadius: BorderRadius.circular(12),
-                      ),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text('Q: ${item.question}',
-                              style: const TextStyle(fontSize: 16)),
-                          const SizedBox(height: 4),
-                          Text('A: ${item.answer}',
-                              style: const TextStyle(fontSize: 16)),
-                          const SizedBox(height: 4),
-                          Text('🧠 ${item.mciReason}',
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
-                          const SizedBox(height: 4),
-                          Text(item.date,
-                              style: const TextStyle(
-                                  fontSize: 12, color: Colors.grey)),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+          : ListView.builder(
+              padding: const EdgeInsets.all(16),
+              itemCount: _history.length,
+              itemBuilder: (_, index) {
+                final item = _history[index];
+                return Container(
+                  margin: const EdgeInsets.symmetric(vertical: 8),
+                  padding: const EdgeInsets.all(12),
+                  decoration: BoxDecoration(
+                    color: Colors.yellow[50],
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text('Q: ${item.question}',
+                          style: const TextStyle(fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text('A: ${item.answer}',
+                          style: const TextStyle(fontSize: 16)),
+                      const SizedBox(height: 4),
+                      Text('🧠 ${item.mciReason}',
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey)),
+                      const SizedBox(height: 4),
+                      Text(item.date,
+                          style: const TextStyle(
+                              fontSize: 12, color: Colors.grey)),
+                    ],
+                  ),
+                );
+              },
+            ),
     );
   }
 }
