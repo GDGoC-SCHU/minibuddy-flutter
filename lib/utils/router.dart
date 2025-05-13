@@ -103,12 +103,7 @@ final GoRouter router = GoRouter(
     // MyPage
     GoRoute(
       path: '/mypage',
-      builder: (context, state) => BlocProvider(
-        create: (_) => ProfileBloc(
-          repository: ProfileRepository(context),
-        )..add(LoadProfile()),
-        child: const MyPageScreen(),
-      ),
+      builder: (context, state) => const MyPageScreen(), // BlocProvider 제거됨
     ),
   ],
 );

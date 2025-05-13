@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart'; // GoRouter 임포트
 import 'package:minibuddy/blocs/user/user_bloc.dart';
+import 'package:minibuddy/blocs/user/user_event.dart';
 import 'package:minibuddy/blocs/user/user_state.dart';
+import 'package:minibuddy/data/user/user_repository.dart';
 import 'package:minibuddy/models/user_status_model.dart';
 import 'package:minibuddy/models/emotion_flow_model.dart';
 import 'package:minibuddy/models/emotion_distribution_model.dart';
@@ -17,26 +19,43 @@ class UserScreen extends StatefulWidget {
 }
 
 class _UserScreenState extends State<UserScreen> {
+  late final UserBloc _bloc;
+
+  @override
+  void initState() {
+    super.initState();
+    _bloc = UserBloc(repository: UserRepository(context))..add(LoadUserData());
+  }
+
+  @override
+  void dispose() {
+    _bloc.close();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Emotional Status'),
-        elevation: 0,
-      ),
-      body: BlocBuilder<UserBloc, UserState>(
-        builder: (context, state) {
-          if (state is UserLoading) {
-            return const Center(child: CircularProgressIndicator());
-          } else if (state is UserLoaded) {
-            final status = state.status;
-            final flow = state.flow;
-            final distribution = state.distribution;
-            return _buildContent(status, flow, distribution);
-          }
+    return BlocProvider.value(
+      value: _bloc,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Emotional Status'),
+          elevation: 0,
+        ),
+        body: BlocBuilder<UserBloc, UserState>(
+          builder: (context, state) {
+            if (state is UserLoading) {
+              return const Center(child: CircularProgressIndicator());
+            } else if (state is UserLoaded) {
+              final status = state.status;
+              final flow = state.flow;
+              final distribution = state.distribution;
+              return _buildContent(status, flow, distribution);
+            }
 
-          return const SizedBox.shrink();
-        },
+            return const SizedBox.shrink();
+          },
+        ),
       ),
     );
   }
