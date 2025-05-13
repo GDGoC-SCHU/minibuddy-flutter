@@ -29,7 +29,6 @@ import 'package:minibuddy/screens/history/anxiety_detail_screen.dart';
 import 'package:minibuddy/screens/history/depression_detail_screen.dart';
 import 'package:minibuddy/screens/history/stress_detail_screen.dart';
 import 'package:minibuddy/screens/history/memory_detail_screen.dart';
-import 'package:minibuddy/utils/api_client.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
@@ -86,14 +85,7 @@ final GoRouter router = GoRouter(
     // User
     GoRoute(
       path: '/user',
-      builder: (context, state) {
-        return BlocProvider(
-          create: (_) => UserBloc(
-            repository: UserRepository(context),
-          )..add(LoadUserData()),
-          child: const UserScreen(),
-        );
-      },
+      builder: (context, state) => const UserScreen(),
     ),
 
     GoRoute(
