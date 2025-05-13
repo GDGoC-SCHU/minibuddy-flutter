@@ -35,7 +35,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       debugPrint('[HistoryBloc] Memory history loaded: \$data');
       emit(MemoryHistoryLoaded(data));
     } catch (e, stack) {
-      debugPrint('[HistoryBloc] Error: \$e\n\$stack');
+      debugPrint('[HistoryBloc] Error: $e\n$stack');
       emit(HistoryError('불러오기 실패: \$e'));
     }
   }
