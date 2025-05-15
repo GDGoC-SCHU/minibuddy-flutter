@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:go_router/go_router.dart'; // GoRouter 임포트
+import 'package:go_router/go_router.dart';
 import 'package:minibuddy/blocs/user/user_bloc.dart';
 import 'package:minibuddy/blocs/user/user_event.dart';
 import 'package:minibuddy/blocs/user/user_state.dart';
