@@ -40,12 +40,30 @@ class _HomeScreenState extends State<HomeScreen> {
 
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
-      onError: (val) {
+      onError: (val) async {
         print('🧨 Speech error: ${val.errorMsg}');
+
+        if (val.errorMsg == 'error_no_match') {
+          // 🔁 STT 강제 중단 + UI 복구
+          await _speech.stop();
+        }
+
+        if (mounted) {
+          setState(() {
+            isListening = false;
+            isTtsPlaying = false;
+          });
+        }
       },
       onStatus: (status) {
         print('🎙️ Speech status: $status');
-        // 더 이상 'done'에서 처리 안함!
+
+        // STT 종료된 경우 마이크 버튼 복구
+        if (status == 'done' || status == 'notListening') {
+          if (mounted) {
+            setState(() => isListening = false);
+          }
+        }
       },
     );
 
