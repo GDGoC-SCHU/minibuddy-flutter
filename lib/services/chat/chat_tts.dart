@@ -9,7 +9,7 @@ class ChatTtsService {
   final Dio _dio = Dio();
   final AudioPlayer _player = AudioPlayer();
 
-  Future<void> speak(String text) async {
+  Future<void> speak(String text, {Function? onComplete}) async {
     try {
       print("📣 TTS 요청 시작: $text");
 
@@ -36,7 +36,6 @@ class ChatTtsService {
 
       final bytes = base64Decode(audioContent);
 
-      // 임시 파일 생성
       final dir = await getTemporaryDirectory();
       final filePath = '${dir.path}/tts.mp3';
       final file = File(filePath);
@@ -44,7 +43,13 @@ class ChatTtsService {
 
       print("🎧 오디오 파일 저장 완료: $filePath");
 
-      // 재생
+      // 플레이어가 끝났을 때 콜백
+      _player.onPlayerCompletion.listen((event) {
+        print("🔚 TTS 재생 완료");
+        onComplete?.call();
+        _player.dispose(); // 리소스 정리
+      });
+
       final result = await _player.play(filePath, isLocal: true);
       if (result == 1) {
         print("✅ TTS 재생 성공");
