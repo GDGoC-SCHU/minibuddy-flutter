@@ -51,7 +51,7 @@ class _KeywordInputScreenState extends State<KeywordInputScreen> {
     OnboardingState().keywords = _selected;
 
     if (widget.isFromEdit) {
-      Navigator.pop(context, _selected); // 마이페이지에서 복귀
+      Navigator.pop(context, _selected);
     } else {
       await handleRequest(
         context: context,
@@ -64,99 +64,130 @@ class _KeywordInputScreenState extends State<KeywordInputScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context).copyWith(
-      colorScheme: ColorScheme.light(
-        primary: Colors.grey[800]!,
-        onPrimary: Colors.white,
-        onSurface: Colors.grey[800]!,
-      ),
-    );
+    final bool isEditing = widget.isFromEdit;
 
-    return Theme(
-      data: theme,
-      child: Scaffold(
-        appBar: AppBar(
-          title: const Text('Select Your Interests'),
-          automaticallyImplyLeading: true,
-        ),
-        body: Padding(
-          padding: EdgeInsets.all(24.w),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                'What topics are you into? (${_selected.length}/5)',
-                style: TextStyle(
-                  fontSize: 20.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 20.h),
-              Expanded(
-                child: SingleChildScrollView(
-                  child: Wrap(
-                    spacing: 10.w,
-                    runSpacing: 10.h,
-                    children: _keywords.map((keyword) {
-                      final selected = _selected.contains(keyword);
-                      return GestureDetector(
-                        onTap: () => _toggle(keyword),
-                        child: Container(
-                          padding: EdgeInsets.symmetric(
-                            horizontal: 16.w,
-                            vertical: 10.h,
-                          ),
-                          decoration: BoxDecoration(
-                            color: selected
-                                ? theme.colorScheme.primary
-                                : Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(12.r),
-                            boxShadow: [
-                              BoxShadow(
-                                color: Colors.black12,
-                                blurRadius: 4,
-                                offset: Offset(1, 2),
-                              ),
-                            ],
-                          ),
-                          child: Text(
-                            keyword,
-                            style: TextStyle(
-                              fontSize: 14.sp,
-                              color: selected
-                                  ? theme.colorScheme.onPrimary
-                                  : theme.colorScheme.onSurface,
-                              fontWeight: FontWeight.w500,
-                            ),
-                          ),
-                        ),
-                      );
-                    }).toList(),
-                  ),
-                ),
-              ),
-              SizedBox(height: 20.h),
-              SizedBox(
-                width: double.infinity,
-                height: 48.h,
-                child: ElevatedButton(
-                  onPressed: _onSubmit,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: theme.colorScheme.primary,
-                    foregroundColor: theme.colorScheme.onPrimary,
-                  ),
-                  child: Text(
-                    widget.isFromEdit
-                        ? 'Save'
-                        : _selected.isEmpty
-                            ? 'Skip'
-                            : 'Continue (${_selected.length}/5)',
-                  ),
-                ),
-              ),
-            ],
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Colors.transparent, // AppBar도 투명
+        elevation: 0,
+        automaticallyImplyLeading: true,
+      ),
+      extendBodyBehindAppBar: true, // 배경 이미지가 AppBar 뒤로도 보이도록
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child: Image.asset(
+              'assets/images/background.png',
+              fit: BoxFit.cover,
+            ),
           ),
-        ),
+          SafeArea(
+            child: Padding(
+              padding: EdgeInsets.all(24.w),
+              child: Column(
+                children: [
+                  SizedBox(height: 20.h),
+                  Text(
+                    'What topics are you into?',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                      fontFamily: 'Pretendard',
+                    ),
+                    maxLines: 1,
+                  ),
+                  Text(
+                    '(${_selected.length}/5)',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(
+                      fontSize: 24.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                      fontFamily: 'Pretendard',
+                    ),
+                  ),
+                  SizedBox(height: 70.h),
+                  Expanded(
+                    child: SingleChildScrollView(
+                      child: Wrap(
+                        alignment: WrapAlignment.center,
+                        spacing: 12.w,
+                        runSpacing: 12.h,
+                        children: _keywords.map((keyword) {
+                          final selected = _selected.contains(keyword);
+                          return GestureDetector(
+                            onTap: () => _toggle(keyword),
+                            child: Container(
+                              padding: EdgeInsets.symmetric(
+                                horizontal: 24.w,
+                                vertical: 14.h,
+                              ),
+                              decoration: BoxDecoration(
+                                color: selected
+                                    ? Colors.grey[800]
+                                    : Colors.grey.shade100,
+                                borderRadius: BorderRadius.circular(20.r),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black12,
+                                    blurRadius: 4,
+                                    offset: Offset(1, 2),
+                                  ),
+                                ],
+                              ),
+                              child: Text(
+                                keyword,
+                                style: TextStyle(
+                                  fontSize: 16.sp,
+                                  fontWeight: FontWeight.w500,
+                                  fontFamily: 'Pretendard',
+                                  color: selected
+                                      ? Colors.white
+                                      : Colors.grey[800],
+                                ),
+                              ),
+                            ),
+                          );
+                        }).toList(),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 30.h),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 48.h,
+                    child: ElevatedButton(
+                      onPressed: _onSubmit,
+                      style: ButtonStyle(
+                        backgroundColor:
+                            MaterialStateProperty.resolveWith<Color>(
+                          (states) => Colors.grey[800]!,
+                        ),
+                        foregroundColor: MaterialStateProperty.all(
+                            const Color.fromARGB(255, 255, 255, 255)),
+                        textStyle: MaterialStateProperty.all(TextStyle(
+                          fontSize: 16.sp,
+                          fontWeight: FontWeight.w500,
+                          fontFamily: 'Pretendard',
+                        )),
+                      ),
+                      child: Text(
+                        isEditing
+                            ? 'Save'
+                            : _selected.isEmpty
+                                ? 'Skip'
+                                : 'Continue (${_selected.length}/5)',
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: 20.h),
+                ],
+              ),
+            ),
+          ),
+        ],
       ),
     );
   }
