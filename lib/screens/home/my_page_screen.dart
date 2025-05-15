@@ -70,7 +70,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           child: Text(
                             'Profile',
                             style: TextStyle(
-                              fontSize: 24.sp,
+                              fontSize: 23.sp,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Pretendard',
                               color: const Color.fromARGB(255, 86, 86, 86),
@@ -136,7 +136,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                           child: Text(
                             'Settings',
                             style: TextStyle(
-                              fontSize: 24.sp,
+                              fontSize: 23.sp,
                               fontWeight: FontWeight.w700,
                               fontFamily: 'Pretendard',
                               color: const Color.fromARGB(255, 86, 86, 86),
