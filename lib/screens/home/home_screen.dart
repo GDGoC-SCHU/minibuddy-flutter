@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
+import 'package:go_router/go_router.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeScreen extends StatefulWidget {
-  const HomeScreen({Key? key}) : super(key: key);
+  const HomeScreen({super.key});
 
   @override
   State<HomeScreen> createState() => _HomeScreenState();
@@ -17,10 +18,10 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _initializeSpeech(); // 마이크 권한은 speech_to_text가 자체 요청함
+    _initializeSpeech(); // STT 초기화 + 마이크 권한 요청
   }
 
-  /// STT 초기화 (권한 요청도 자동 포함)
+  /// STT 초기화
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) => print('🛑 Speech error: $val'),
@@ -36,11 +37,8 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// 음성 인식 시작
-  void _startListening() async {
-    if (!speechAvailable) {
-      print("⚠️ 음성 인식 기능이 초기화되지 않음");
-      return;
-    }
+  Future<void> _startListening() async {
+    if (!speechAvailable) return;
 
     setState(() {
       isListening = true;
@@ -57,14 +55,14 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   /// 음성 인식 중단
-  void _stopListening() async {
+  Future<void> _stopListening() async {
     await _speech.stop();
     setState(() {
       isListening = false;
     });
   }
 
-  /// 설정 이동 다이얼로그
+  /// 마이크 권한 안내
   void _showPermissionDialog() {
     showDialog(
       context: context,
@@ -75,8 +73,7 @@ class _HomeScreenState extends State<HomeScreen> {
           TextButton(
             onPressed: () {
               Navigator.of(context).pop();
-              stt.SpeechToText().stop(); // 권한 없을 때 STT 종료
-              stt.SpeechToText().cancel();
+              _speech.cancel();
             },
             child: const Text("확인"),
           ),
@@ -89,25 +86,53 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('음성 인식 테스트'),
+        title: const Text('HomeScreen'),
         backgroundColor: Colors.pink,
+        automaticallyImplyLeading: false,
       ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              recognizedText.isEmpty ? '음성 인식 텍스트가 없습니다.' : recognizedText,
-              textAlign: TextAlign.center,
-              style: const TextStyle(fontSize: 18),
-            ),
-            const SizedBox(height: 30),
-            FloatingActionButton(
-              onPressed: isListening ? _stopListening : _startListening,
-              child: Icon(isListening ? Icons.stop : Icons.mic, size: 36),
-              backgroundColor: Colors.pink,
-            ),
-          ],
+        child: Text(
+          recognizedText.isEmpty ? '음성 인식 텍스트가 없습니다.' : recognizedText,
+          textAlign: TextAlign.center,
+          style: const TextStyle(fontSize: 18),
+        ),
+      ),
+      bottomNavigationBar: BottomAppBar(
+        color: Colors.white,
+        elevation: 8,
+        child: Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              // 마이페이지 이동
+              ElevatedButton.icon(
+                onPressed: () => context.push('/mypage'),
+                icon: const Icon(Icons.settings),
+                label: const Text('My Page'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[800],
+                  foregroundColor: Colors.white,
+                ),
+              ),
+              // 마이크 버튼
+              FloatingActionButton(
+                onPressed: isListening ? _stopListening : _startListening,
+                child: Icon(isListening ? Icons.stop : Icons.mic),
+                backgroundColor: const Color.fromARGB(255, 130, 130, 130),
+              ),
+              // 상태 페이지 이동
+              ElevatedButton.icon(
+                onPressed: () => context.push('/user'),
+                icon: const Icon(Icons.bar_chart),
+                label: const Text('Status'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.grey[800],
+                  foregroundColor: Colors.white,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
