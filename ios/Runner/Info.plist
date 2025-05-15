@@ -51,7 +51,7 @@
 
 	<key>NSSpeechRecognitionUsageDescription</key>
 	<string>This app needs access to speech recognition to convert speech to text.</string>
-
+	
 
 	<!--나중에 삭제!!!!! -->
 	<key>NSAppTransportSecurity</key>

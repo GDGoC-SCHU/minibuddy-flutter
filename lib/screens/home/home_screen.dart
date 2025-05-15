@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/services/chat/chat_api.dart';
 import 'package:minibuddy/services/chat/chat_repository.dart';
 import 'package:minibuddy/services/chat/chat_service.dart';
+import 'package:minibuddy/services/chat/chat_tts.dart';
 import 'package:minibuddy/utils/api_client.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -18,6 +19,7 @@ class _HomeScreenState extends State<HomeScreen> {
   final ChatService chatService = ChatService(
     ChatRepository(ChatApi(ApiClient.instance)),
   );
+  final ChatTtsService ttsService = ChatTtsService();
 
   bool isListening = false;
   bool speechAvailable = false;
@@ -48,10 +50,11 @@ class _HomeScreenState extends State<HomeScreen> {
           if (finalText.isNotEmpty) {
             print('📤 Sending to server: "$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
+            print('📥 Server response: $response');
             setState(() {
               serverResponse = response;
             });
-            print('📥 Server response: $response');
+            await ttsService.speak(response);
           } else {
             print('⚠️ No text recognized to send');
           }
@@ -82,7 +85,7 @@ class _HomeScreenState extends State<HomeScreen> {
       pauseFor: const Duration(seconds: 3),
       onResult: (result) {
         final text = result.recognizedWords;
-        print('\uD83E\uDE20 Recognized: $text');
+        print('🨠 Recognized: $text');
 
         if (text.trim().isNotEmpty) {
           finalText = text;
