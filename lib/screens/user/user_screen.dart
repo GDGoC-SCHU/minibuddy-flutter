@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minibuddy/blocs/user/user_bloc.dart';
 import 'package:minibuddy/blocs/user/user_event.dart';
@@ -39,7 +40,7 @@ class _UserScreenState extends State<UserScreen> {
       value: _bloc,
       child: Scaffold(
         appBar: AppBar(
-          title: const Text('Emotional Status'),
+          title: Text('Emotional Status', style: TextStyle(fontSize: 20.sp)),
           elevation: 0,
         ),
         body: BlocBuilder<UserBloc, UserState>(
@@ -52,7 +53,6 @@ class _UserScreenState extends State<UserScreen> {
               final distribution = state.distribution;
               return _buildContent(status, flow, distribution);
             }
-
             return const SizedBox.shrink();
           },
         ),
@@ -66,48 +66,46 @@ class _UserScreenState extends State<UserScreen> {
     EmotionDistributionModel distribution,
   ) {
     return SingleChildScrollView(
-      padding: const EdgeInsets.all(16),
+      padding: EdgeInsets.all(16.w),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          _buildTotalChats(status.chatCount), // Display total chats
-          const SizedBox(height: 16),
-          _buildScoreCards(status), // Display 4 score cards in 2x2 grid
-          const SizedBox(height: 16),
-          _buildFlowChart(flow), // Display emotion flow chart
-          const SizedBox(height: 16),
-          _buildDistributionChart(
-              distribution), // Display emotion distribution chart
+          _buildTotalChats(status.chatCount),
+          SizedBox(height: 16.h),
+          _buildScoreCards(status),
+          SizedBox(height: 16.h),
+          _buildFlowChart(flow),
+          SizedBox(height: 16.h),
+          _buildDistributionChart(distribution),
         ],
       ),
     );
   }
 
-  // Display total chats at the top with center alignment
   Widget _buildTotalChats(int totalChats) {
     return LayoutBuilder(
       builder: (context, constraints) {
-        return Text(
-          "In total, you've had $totalChats conversations",
-          textAlign: TextAlign.center, // Center-align the text
-          style: TextStyle(
-            fontSize:
-                constraints.maxWidth > 600 ? 30 : 25, // Responsive font size
-            fontWeight: FontWeight.bold,
+        return Center(
+          child: Text(
+            "In total, you've had $totalChats conversations",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+              fontSize: constraints.maxWidth > 600 ? 30.sp : 25.sp,
+              fontWeight: FontWeight.bold,
+            ),
           ),
         );
       },
     );
   }
 
-  // Display 4 score cards in a 2x2 grid
   Widget _buildScoreCards(UserStatusModel status) {
     return GridView.count(
       crossAxisCount: 2,
       shrinkWrap: true,
       physics: const NeverScrollableScrollPhysics(),
-      crossAxisSpacing: 16,
-      mainAxisSpacing: 16,
+      crossAxisSpacing: 16.w,
+      mainAxisSpacing: 16.h,
       children: [
         _buildScoreCard('Depression', status.depScore, '/user/depression'),
         _buildScoreCard('Anxiety', status.anxScore, '/user/anxiety'),
@@ -117,36 +115,32 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  // Create a score card for each category with improved UI
   Widget _buildScoreCard(String label, int score, String route) {
     return InkWell(
-      onTap: () {
-        // Navigate to the respective screen using GoRouter
-        context.push(route); // Use GoRouter for navigation
-      },
+      onTap: () => context.push(route),
       child: Card(
         elevation: 8,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15),
+          borderRadius: BorderRadius.circular(15.r),
         ),
         color: Colors.blueAccent.withOpacity(0.1),
         child: Padding(
-          padding: const EdgeInsets.all(16),
+          padding: EdgeInsets.all(16.w),
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 label,
-                style: const TextStyle(
-                  fontSize: 18,
+                style: TextStyle(
+                  fontSize: 18.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              const SizedBox(height: 8),
+              SizedBox(height: 8.h),
               Text(
                 '$score',
-                style: const TextStyle(
-                  fontSize: 28,
+                style: TextStyle(
+                  fontSize: 28.sp,
                   fontWeight: FontWeight.bold,
                 ),
               ),
@@ -157,26 +151,25 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  // Emotion flow chart section
   Widget _buildFlowChart(List<EmotionFlowModel> flow) {
     return Card(
       elevation: 4,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               '📈 Emotion Flow',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             SizedBox(
-              height: 220,
+              height: 220.h,
               width: double.infinity,
               child: CustomPaint(
                 painter: EmotionFlowPainter(flow),
@@ -188,26 +181,25 @@ class _UserScreenState extends State<UserScreen> {
     );
   }
 
-  // Emotion distribution chart section
   Widget _buildDistributionChart(EmotionDistributionModel distribution) {
     return Card(
       elevation: 4,
       margin: EdgeInsets.zero,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
+        borderRadius: BorderRadius.circular(10.r),
       ),
       child: Padding(
-        padding: const EdgeInsets.all(16),
+        padding: EdgeInsets.all(16.w),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const Text(
+            Text(
               '📊 Emotion Distribution',
-              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold),
+              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
             ),
-            const SizedBox(height: 12),
+            SizedBox(height: 12.h),
             SizedBox(
-              height: 220,
+              height: 220.h,
               width: double.infinity,
               child: CustomPaint(
                 painter: EmotionDistributionPainter(distribution),
