@@ -3,7 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/services/chat/chat_api.dart';
 import 'package:minibuddy/services/chat/chat_repository.dart';
 import 'package:minibuddy/services/chat/chat_service.dart';
-import 'package:minibuddy/services/chat/chat_tts.dart';
+import 'package:minibuddy/services/chat/tts_controller.dart';
 import 'package:minibuddy/utils/api_client.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
@@ -100,7 +100,7 @@ class _HomeScreenState extends State<HomeScreen> {
     });
 
     await _speech.listen(
-      pauseFor: const Duration(seconds: 3),
+      pauseFor: const Duration(seconds: 2),
       onResult: (result) {
         final text = result.recognizedWords;
         print('🨠 Recognized: \$text');
