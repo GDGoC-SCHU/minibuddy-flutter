@@ -185,6 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
           body: SizedBox(
             child: HomeBody(
               serverResponse: serverResponse,
+              recognizedText: recognizedText,
             ),
           ),
           floatingActionButton: Stack(
