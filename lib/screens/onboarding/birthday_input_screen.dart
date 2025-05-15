@@ -47,77 +47,114 @@ class _BirthdayInputScreenState extends State<BirthdayInputScreen> {
     if (_selectedDate == null) return;
 
     final formatted = DateFormat('yyyy-MM-dd').format(_selectedDate!);
-    OnboardingState().birthdate = formatted; // 생일을 문자열로 저장
+    OnboardingState().birthdate = formatted;
 
     if (widget.isFromEdit) {
-      Navigator.pop(context, _selectedDate); // 마이페이지로 복귀
+      Navigator.pop(context, _selectedDate);
     } else {
-      context.push('/onboarding/keyword'); // 다음 온보딩 화면으로 이동
+      context.push('/onboarding/keyword');
     }
   }
 
   @override
   Widget build(BuildContext context) {
+    final bool isEditing = widget.isFromEdit;
     final String dateText = _selectedDate != null
         ? DateFormat('yyyy.MM.dd').format(_selectedDate!)
         : 'Select your birthday';
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Set Your Birthday'),
-        automaticallyImplyLeading: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'When is your birthday?',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 30.h),
-            GestureDetector(
-              onTap: _pickDate,
-              child: Container(
-                width: double.infinity,
-                padding: EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
-                decoration: BoxDecoration(
-                  border: Border.all(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                child: Text(
-                  dateText,
+    return Stack(
+      children: [
+        // ✅ 전체 배경 이미지
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/background.png',
+            fit: BoxFit.cover,
+          ),
+        ),
+
+        // ✅ 투명 Scaffold 위에 내용 구성
+        Scaffold(
+          backgroundColor: Colors.transparent,
+          appBar: AppBar(
+            backgroundColor: Colors.transparent,
+            elevation: 0,
+            automaticallyImplyLeading: true,
+          ),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 120.h),
+                Text(
+                  'When is your\nbirthday?',
                   style: TextStyle(
-                    fontSize: 16.sp,
-                    color: _selectedDate != null
-                        ? Colors.black
-                        : Colors.grey.shade500,
+                    fontSize: 40.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                    fontFamily: 'Pretendard',
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 40.h),
-            SizedBox(
-              width: double.infinity,
-              height: 48.h,
-              child: ElevatedButton(
-                onPressed: _selectedDate == null ? null : _onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _selectedDate == null ? Colors.grey[300] : Colors.black,
-                  foregroundColor: Colors.white,
-                  textStyle: TextStyle(fontSize: 16.sp),
+                SizedBox(height: 180.h),
+                GestureDetector(
+                  onTap: _pickDate,
+                  child: Container(
+                    width: double.infinity,
+                    padding:
+                        EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: Colors.grey[700]!,
+                        width: 1.2,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    child: Text(
+                      dateText,
+                      style: TextStyle(
+                        fontSize: 16.sp,
+                        fontFamily: 'Pretendard',
+                        color: _selectedDate != null
+                            ? Colors.black
+                            : Colors.grey.shade500,
+                      ),
+                    ),
+                  ),
                 ),
-                child: Text(widget.isFromEdit ? 'Save' : 'Continue'),
-              ),
+                SizedBox(height: 40.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.h,
+                  child: ElevatedButton(
+                    onPressed: _selectedDate == null ? null : _onSubmit,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return const Color.fromARGB(
+                                159, 109, 109, 109); // 비활성화 색상
+                          }
+                          return const Color.fromARGB(
+                              255, 55, 55, 55); // 활성화 색상
+                        },
+                      ),
+                      foregroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 255, 255, 255)),
+                      textStyle: MaterialStateProperty.all(TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Pretendard',
+                      )),
+                    ),
+                    child: Text(isEditing ? 'Save' : 'Continue'),
+                  ),
+                ),
+              ],
             ),
-          ],
+          ),
         ),
-      ),
+      ],
     );
   }
 }
