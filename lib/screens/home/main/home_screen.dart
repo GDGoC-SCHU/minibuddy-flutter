@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
+import 'package:minibuddy/screens/home/main/waveform_widget.dart';
 import 'package:minibuddy/services/chat/chat_api.dart';
 import 'package:minibuddy/services/chat/chat_repository.dart';
 import 'package:minibuddy/services/chat/chat_service.dart';
@@ -39,20 +41,20 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('\uD83E\uDEA8 Speech error: \${val.errorMsg}');
+        print('🧨 Speech error: \${val.errorMsg}');
         if (val.errorMsg == 'error_no_match') {
           setState(() => isListening = false);
           return;
         }
       },
       onStatus: (status) async {
-        print('\uD83C\uDF99\uFE0F Speech status: \$status');
+        print('🎙️ Speech status: \$status');
         if (status == 'done' && !hasSentToServer) {
           hasSentToServer = true;
           if (finalText.isNotEmpty) {
-            print('\uD83D\uDCE4 Sending to server: "\$finalText"');
+            print('📤 Sending to server: "\$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
-            print('\uD83D\uDCE5 Server response: \$response');
+            print('📥 Server response: \$response');
 
             setState(() {
               serverResponse = response;
@@ -69,14 +71,14 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               });
             } catch (e) {
-              print('\u274C TTS \uC624\uB958 \uBC1C\uC0DD: \$e');
+              print('❌ TTS 오류 발생: \$e');
               if (mounted) {
                 setState(() {
                   isTtsPlaying = false;
                   isListening = false;
                 });
               } else {
-                print('\u26A0\uFE0F No text recognized to send');
+                print('⚠️ No text recognized to send');
                 setState(() => isListening = false);
               }
             } finally {
@@ -93,10 +95,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (!speechAvailable) {
-      print("\u274C STT initialization failed or permission denied");
+      print("❌ STT initialization failed or permission denied");
       _showPermissionDialog();
     } else {
-      print("\u2705 STT initialized");
+      print("✅ STT initialized");
     }
   }
 
@@ -115,7 +117,7 @@ class _HomeScreenState extends State<HomeScreen> {
       pauseFor: const Duration(seconds: 2),
       onResult: (result) {
         final text = result.recognizedWords;
-        print('\uD83E\uA8A0 Recognized: \$text');
+        print('🨠 Recognized: \$text');
 
         if (text.trim().isNotEmpty) {
           finalText = text;
@@ -160,56 +162,82 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-
           body: SizedBox(
             child: HomeBody(
               serverResponse: serverResponse,
             ),
           ),
-
-          floatingActionButton: Align(
-            alignment: Alignment.bottomCenter,
-            child: Transform.translate(
-              offset: const Offset(0, -35),
-              child: Container(
-                width: 80,
-                height: 80,
-                decoration: BoxDecoration(
-                  color: const Color.fromARGB(255, 255, 208, 106),
-                  shape: BoxShape.circle,
-                  border: Border.all(
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    width: 6,
+          floatingActionButton: Stack(
+            clipBehavior: Clip.none,
+            alignment: Alignment.center,
+            children: [
+              if (recognizedText.isNotEmpty)
+                Positioned(
+                  bottom: 90.h,
+                  child: Column(
+                    children: [
+                      Text(
+                        recognizedText,
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 18.sp,
+                          fontWeight: FontWeight.w600,
+                          color: Colors.black87,
+                          fontFamily: 'Pretendard',
+                        ),
+                      ),
+                      SizedBox(height: 10.h),
+                      SizedBox(
+                        width: 120.w,
+                        height: 40.h,
+                        child: const WaveformWidget(),
+                      ),
+                    ],
                   ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.15),
-                      blurRadius: 8,
-                      offset: const Offset(0, 4),
-                    ),
-                  ],
                 ),
-                child: FloatingActionButton(
-                  onPressed:
-                      isListening || isTtsPlaying ? null : _startListening,
-                  backgroundColor: Colors.transparent,
-                  elevation: 0,
-                  shape: const CircleBorder(),
-                  child: Icon(
-                    isListening ? Icons.stop : Icons.mic,
-                    color: const Color.fromARGB(255, 255, 255, 255),
-                    size: 40,
+              Align(
+                alignment: Alignment.bottomCenter,
+                child: Transform.translate(
+                  offset: Offset(0, -35.h),
+                  child: Container(
+                    width: 80.w,
+                    height: 80.w,
+                    decoration: BoxDecoration(
+                      color: const Color.fromARGB(255, 255, 208, 106),
+                      shape: BoxShape.circle,
+                      border: Border.all(
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        width: 6.w,
+                      ),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withOpacity(0.15),
+                          blurRadius: 8.r,
+                          offset: const Offset(0, 4),
+                        ),
+                      ],
+                    ),
+                    child: FloatingActionButton(
+                      onPressed:
+                          isListening || isTtsPlaying ? null : _startListening,
+                      backgroundColor: Colors.transparent,
+                      elevation: 0,
+                      shape: const CircleBorder(),
+                      child: Icon(
+                        isListening ? Icons.stop : Icons.mic,
+                        color: const Color.fromARGB(255, 255, 255, 255),
+                        size: 40.sp,
+                      ),
+                    ),
                   ),
                 ),
               ),
-            ),
+            ],
           ),
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
-
-          // Bottom navigation bar
           bottomNavigationBar: SizedBox(
-            height: MediaQuery.of(context).size.height * 0.15,
+            height: 0.15.sh,
             child: HomeBottomBar(
               isListening: isListening,
               isTtsPlaying: isTtsPlaying,
