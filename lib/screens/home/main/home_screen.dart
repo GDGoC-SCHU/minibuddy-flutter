@@ -1,11 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
 import 'package:minibuddy/services/chat/chat_api.dart';
 import 'package:minibuddy/services/chat/chat_repository.dart';
 import 'package:minibuddy/services/chat/chat_service.dart';
 import 'package:minibuddy/services/chat/tts_controller.dart';
 import 'package:minibuddy/utils/api_client.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
+import 'home_body.dart';
+import 'home_bottom_bar.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -38,20 +39,20 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('🧨 Speech error: \${val.errorMsg}');
+        print('\uD83E\uDEA8 Speech error: \${val.errorMsg}');
         if (val.errorMsg == 'error_no_match') {
           setState(() => isListening = false);
           return;
         }
       },
       onStatus: (status) async {
-        print('🎙️ Speech status: \$status');
+        print('\uD83C\uDF99\uFE0F Speech status: \$status');
         if (status == 'done' && !hasSentToServer) {
           hasSentToServer = true;
           if (finalText.isNotEmpty) {
-            print('📤 Sending to server: "$finalText"');
+            print('\uD83D\uDCE4 Sending to server: "\$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
-            print('📥 Server response: $response');
+            print('\uD83D\uDCE5 Server response: \$response');
 
             setState(() {
               serverResponse = response;
@@ -68,18 +69,17 @@ class _HomeScreenState extends State<HomeScreen> {
                 }
               });
             } catch (e) {
-              print('❌ TTS 오류 발생: $e');
+              print('\u274C TTS \uC624\uB958 \uBC1C\uC0DD: \$e');
               if (mounted) {
                 setState(() {
                   isTtsPlaying = false;
                   isListening = false;
                 });
               } else {
-                print('⚠️ No text recognized to send');
+                print('\u26A0\uFE0F No text recognized to send');
                 setState(() => isListening = false);
               }
             } finally {
-              // TTS 실패해도 무조건 마이크 복구
               if (mounted) {
                 setState(() {
                   isTtsPlaying = false;
@@ -93,10 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
     );
 
     if (!speechAvailable) {
-      print("❌ STT initialization failed or permission denied");
+      print("\u274C STT initialization failed or permission denied");
       _showPermissionDialog();
     } else {
-      print("✅ STT initialized");
+      print("\u2705 STT initialized");
     }
   }
 
@@ -115,7 +115,7 @@ class _HomeScreenState extends State<HomeScreen> {
       pauseFor: const Duration(seconds: 2),
       onResult: (result) {
         final text = result.recognizedWords;
-        print('🨠 Recognized: \$text');
+        print('\uD83E\uA8A0 Recognized: \$text');
 
         if (text.trim().isNotEmpty) {
           finalText = text;
@@ -166,73 +166,14 @@ class _HomeScreenState extends State<HomeScreen> {
             elevation: 0,
             automaticallyImplyLeading: false,
           ),
-          body: Column(
-            children: [
-              const Spacer(),
-              if (serverResponse.isNotEmpty)
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                  child: Text(
-                    serverResponse,
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 18, color: Colors.black),
-                  ),
-                ),
-              const SizedBox(height: 16),
-              Center(
-                child: Image.asset(
-                  'assets/images/character.png',
-                  width: 160,
-                  height: 160,
-                ),
-              ),
-              const SizedBox(height: 20),
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0),
-                child: Text(
-                  recognizedText.isEmpty ? ' ' : recognizedText,
-                  textAlign: TextAlign.center,
-                  style: const TextStyle(fontSize: 18, color: Colors.black),
-                ),
-              ),
-              const Spacer(),
-            ],
+          body: HomeBody(
+            recognizedText: recognizedText,
+            serverResponse: serverResponse,
           ),
-          bottomNavigationBar: BottomAppBar(
-            color: Colors.transparent,
-            elevation: 8,
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  ElevatedButton.icon(
-                    onPressed: () => context.push('/mypage'),
-                    icon: const Icon(Icons.settings),
-                    label: const Text('My Page'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[800],
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                  FloatingActionButton(
-                    onPressed:
-                        isListening || isTtsPlaying ? null : _startListening,
-                    child: Icon(isListening ? Icons.stop : Icons.mic),
-                    backgroundColor: const Color.fromARGB(255, 130, 130, 130),
-                  ),
-                  ElevatedButton.icon(
-                    onPressed: () => context.push('/user'),
-                    icon: const Icon(Icons.bar_chart),
-                    label: const Text('Status'),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.grey[800],
-                      foregroundColor: Colors.white,
-                    ),
-                  ),
-                ],
-              ),
-            ),
+          bottomNavigationBar: HomeBottomBar(
+            isListening: isListening,
+            isTtsPlaying: isTtsPlaying,
+            onMicPressed: _startListening,
           ),
         ),
       ],
