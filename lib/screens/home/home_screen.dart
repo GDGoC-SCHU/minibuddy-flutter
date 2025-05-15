@@ -38,20 +38,20 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('🧨 Speech error: ${val.errorMsg}');
+        print('🧨 Speech error: \${val.errorMsg}');
         if (val.errorMsg == 'error_no_match') {
           setState(() => isListening = false);
           return;
         }
       },
       onStatus: (status) async {
-        print('🎙️ Speech status: $status');
+        print('🎙️ Speech status: \$status');
         if (status == 'done' && !hasSentToServer) {
           hasSentToServer = true;
           if (finalText.isNotEmpty) {
-            print('📤 Sending to server: "$finalText"');
+            print('📤 Sending to server: "\$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
-            print('📥 Server response: $response');
+            print('📥 Server response: \$response');
             setState(() {
               serverResponse = response;
               isTtsPlaying = true;
@@ -63,9 +63,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   isListening = false;
                 });
               }
+            }).catchError((e) {
+              print('❌ TTS 오류 발생: \$e');
+              if (mounted) {
+                setState(() {
+                  isTtsPlaying = false;
+                  isListening = false;
+                });
+              }
             });
           } else {
             print('⚠️ No text recognized to send');
+            setState(() => isListening = false);
           }
         }
       },
@@ -94,7 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
       pauseFor: const Duration(seconds: 3),
       onResult: (result) {
         final text = result.recognizedWords;
-        print('🨠 Recognized: $text');
+        print('🨠 Recognized: \$text');
 
         if (text.trim().isNotEmpty) {
           finalText = text;
