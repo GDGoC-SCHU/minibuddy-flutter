@@ -63,48 +63,51 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
+                        const SizedBox(height: 10),
                         const Padding(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Profile',
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
                               fontFamily: 'Pretendard',
+                              color: Color.fromARGB(255, 86, 86, 86),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 10),
+                        // ListTile(
+                        //   dense: true,
+                        //   title: const Text('Account Info',
+                        //       style: TextStyle(
+                        //           fontSize: 18,
+                        //           fontWeight: FontWeight.w700,
+                        //           fontFamily: 'Pretendard')),
+                        //   trailing: Text(
+                        //     profile.email,
+                        //     style: TextStyle(
+                        //         color: Colors.grey[700],
+                        //         fontFamily: 'Pretendard',
+                        //         fontSize: 16),
+                        //   ),
+                        // ),
                         ListTile(
                           dense: true,
-                          title: const Text('Account Info',
+                          title: const Text('Nickname',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Pretendard')),
-                          trailing: Text(
-                            profile.email,
-                            style: TextStyle(
-                                color: Colors.grey[700],
-                                fontFamily: 'Pretendard',
-                                fontSize: 16),
-                          ),
-                        ),
-                        ListTile(
-                          dense: true,
-                          title: const Text('Change Nickname',
-                              style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
                                   fontFamily: 'Pretendard')),
                           trailing: _trailingText(profile.name),
                           onTap: () => _navigateAndPatch(context, 'nickname'),
                         ),
                         ListTile(
                           dense: true,
-                          title: const Text('Change Birthday',
+                          title: const Text('Birthday',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
                                   fontFamily: 'Pretendard')),
                           trailing: _trailingText(
                             '${profile.birthdate.year}.${profile.birthdate.month.toString().padLeft(2, '0')}.${profile.birthdate.day.toString().padLeft(2, '0')}',
@@ -113,35 +116,45 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                         ListTile(
                           dense: true,
-                          title: const Text('Change Keywords',
+                          title: const Text('Interests',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
                                   fontFamily: 'Pretendard')),
-                          trailing: _trailingText(profile.keywords.join(', ')),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 20,
+                            color: Color.fromARGB(255, 86, 86, 86),
+                          ),
                           onTap: () => _navigateAndPatch(context, 'keyword'),
                         ),
+                        const SizedBox(height: 32),
                         const SizedBox(height: 32),
                         const Padding(
                           padding: EdgeInsets.only(bottom: 8),
                           child: Text(
                             'Settings',
                             style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
+                              fontSize: 25,
+                              fontWeight: FontWeight.w700,
                               fontFamily: 'Pretendard',
+                              color: Color.fromARGB(255, 86, 86, 86),
                             ),
                           ),
                         ),
+                        const SizedBox(height: 10),
                         ListTile(
                           dense: true,
                           title: const Text('Open Source Licenses',
                               style: TextStyle(
-                                  fontSize: 16,
-                                  fontWeight: FontWeight.bold,
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w700,
                                   fontFamily: 'Pretendard')),
-                          trailing: const Icon(Icons.arrow_forward_ios_rounded,
-                              size: 14, color: Colors.grey),
+                          trailing: const Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 20,
+                            color: Color.fromARGB(255, 86, 86, 86),
+                          ),
                           onTap: () => showLicensePage(
                             context: context,
                           ),
@@ -152,15 +165,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
                             'App Version',
                             style: TextStyle(
                                 color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                fontSize: 20,
                                 fontFamily: 'Pretendard'),
                           ),
                           trailing: Text(
                             '1.0.0',
                             style: TextStyle(
-                                color: Colors.grey,
-                                fontSize: 16,
+                                color: Color.fromARGB(255, 86, 86, 86),
+                                fontSize: 20,
                                 fontFamily: 'Pretendard'),
                           ),
                         ),
@@ -178,7 +191,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         child: const Text(
                           'Log out',
                           style: TextStyle(
-                              color: Colors.red, fontFamily: 'Pretendard'),
+                              color: Colors.red,
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15),
                         ),
                       ),
                       TextButton(
@@ -186,7 +202,10 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         child: const Text(
                           'Delete Account',
                           style: TextStyle(
-                              color: Colors.red, fontFamily: 'Pretendard'),
+                              color: Colors.red,
+                              fontFamily: 'Pretendard',
+                              fontWeight: FontWeight.w700,
+                              fontSize: 15),
                         ),
                       ),
                     ],
@@ -200,8 +219,22 @@ class _MyPageScreenState extends State<MyPageScreen> {
             appBar: AppBar(
               title: const Text('My Page',
                   style: TextStyle(fontFamily: 'Pretendard')),
+              backgroundColor: Colors.transparent, // 배경 비침
+              elevation: 0,
             ),
-            body: SafeArea(child: content),
+            extendBodyBehindAppBar: true, // AppBar 뒤로 배경 확장
+            backgroundColor: Colors.transparent, // 완전 투명 설정
+            body: Stack(
+              children: [
+                Positioned.fill(
+                  child: Image.asset(
+                    'assets/images/home_background.png', // 배경 이미지 경로
+                    fit: BoxFit.cover,
+                  ),
+                ),
+                SafeArea(child: content), // 기존 UI 유지
+              ],
+            ),
           );
         },
       ),
@@ -214,9 +247,15 @@ class _MyPageScreenState extends State<MyPageScreen> {
       children: [
         Text(text,
             style: const TextStyle(
-                color: Colors.grey, fontFamily: 'Pretendard', fontSize: 16)),
-        const Icon(Icons.arrow_forward_ios_rounded,
-            size: 14, color: Colors.grey),
+                color: Color.fromARGB(255, 86, 86, 86),
+                fontFamily: 'Pretendard',
+                fontSize: 20)),
+        const SizedBox(width: 10),
+        const Icon(
+          Icons.arrow_forward_ios_rounded,
+          size: 20,
+          color: Color.fromARGB(255, 86, 86, 86),
+        ),
       ],
     );
   }
