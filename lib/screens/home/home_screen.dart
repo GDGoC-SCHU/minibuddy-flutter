@@ -49,32 +49,44 @@ class _HomeScreenState extends State<HomeScreen> {
         if (status == 'done' && !hasSentToServer) {
           hasSentToServer = true;
           if (finalText.isNotEmpty) {
-            print('📤 Sending to server: "\$finalText"');
+            print('📤 Sending to server: "$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
-            print('📥 Server response: \$response');
+            print('📥 Server response: $response');
+
             setState(() {
               serverResponse = response;
               isTtsPlaying = true;
             });
-            await ttsService.speak(response, onComplete: () {
+
+            try {
+              await ttsService.speak(response, onComplete: () {
+                if (mounted) {
+                  setState(() {
+                    isTtsPlaying = false;
+                    isListening = false;
+                  });
+                }
+              });
+            } catch (e) {
+              print('❌ TTS 오류 발생: $e');
+              if (mounted) {
+                setState(() {
+                  isTtsPlaying = false;
+                  isListening = false;
+                });
+              } else {
+                print('⚠️ No text recognized to send');
+                setState(() => isListening = false);
+              }
+            } finally {
+              // TTS 실패해도 무조건 마이크 복구
               if (mounted) {
                 setState(() {
                   isTtsPlaying = false;
                   isListening = false;
                 });
               }
-            }).catchError((e) {
-              print('❌ TTS 오류 발생: \$e');
-              if (mounted) {
-                setState(() {
-                  isTtsPlaying = false;
-                  isListening = false;
-                });
-              }
-            });
-          } else {
-            print('⚠️ No text recognized to send');
-            setState(() => isListening = false);
+            }
           }
         }
       },
