@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minibuddy/services/chat/chat_api.dart';
+import 'package:minibuddy/services/chat/chat_repository.dart';
+import 'package:minibuddy/services/chat/chat_service.dart';
+import 'package:minibuddy/utils/api_client.dart';
 import 'package:speech_to_text/speech_to_text.dart' as stt;
 
 class HomeScreen extends StatefulWidget {
@@ -11,9 +15,16 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   final stt.SpeechToText _speech = stt.SpeechToText();
+  final ChatService chatService = ChatService(
+    ChatRepository(ChatApi(ApiClient.instance)),
+  );
+
   bool isListening = false;
   bool speechAvailable = false;
   String recognizedText = "";
+  String finalText = "";
+  String serverResponse = "";
+  bool hasSentToServer = false;
 
   @override
   void initState() {
@@ -24,29 +35,35 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('🛑 Speech error: ${val.errorMsg}');
+        print('🧨 Speech error: ${val.errorMsg}');
         if (val.errorMsg == 'error_no_match') {
-          setState(() {
-            isListening = false; // 버튼 상태 복구
-          });
+          setState(() => isListening = false);
           return;
         }
       },
-      onStatus: (status) {
+      onStatus: (status) async {
         print('🎙️ Speech status: $status');
-        if (status == 'done' || status == 'notListening') {
-          setState(() {
-            isListening = false;
-          });
+        if (status == 'done' && !hasSentToServer) {
+          hasSentToServer = true;
+          if (finalText.isNotEmpty) {
+            print('📤 Sending to server: "$finalText"');
+            final response = await chatService.handleChatRequest(finalText, 0);
+            setState(() {
+              serverResponse = response;
+            });
+            print('📥 Server response: $response');
+          } else {
+            print('⚠️ No text recognized to send');
+          }
         }
       },
     );
 
     if (!speechAvailable) {
-      print("❌ STT 초기화 실패 또는 권한 거부됨");
+      print("❌ STT initialization failed or permission denied");
       _showPermissionDialog();
     } else {
-      print("✅ STT 초기화 성공 및 마이크 권한 허용됨");
+      print("✅ STT initialized");
     }
   }
 
@@ -55,24 +72,29 @@ class _HomeScreenState extends State<HomeScreen> {
 
     setState(() {
       isListening = true;
+      hasSentToServer = false;
       recognizedText = "";
+      finalText = "";
+      serverResponse = "";
     });
 
     await _speech.listen(
-      pauseFor: const Duration(seconds: 3), // 3초간 말 없으면 자동 종료
+      pauseFor: const Duration(seconds: 3),
       onResult: (result) {
-        setState(() {
-          recognizedText = result.recognizedWords;
-        });
+        final text = result.recognizedWords;
+        print('\uD83E\uDE20 Recognized: $text');
+
+        if (text.trim().isNotEmpty) {
+          finalText = text;
+          setState(() => recognizedText = text);
+        }
       },
     );
   }
 
   Future<void> _stopListening() async {
     await _speech.stop();
-    setState(() {
-      isListening = false;
-    });
+    setState(() => isListening = false);
   }
 
   void _showPermissionDialog() {
@@ -81,8 +103,7 @@ class _HomeScreenState extends State<HomeScreen> {
       builder: (context) => AlertDialog(
         title: const Text("Permission Request"),
         content: const Text(
-          "Microphone permission was denied. Please allow it in the settings.",
-        ),
+            "Microphone permission was denied. Please allow it in the settings."),
         actions: [
           TextButton(
             onPressed: () {
@@ -100,15 +121,10 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Stack(
       children: [
-        // 배경 이미지
         Positioned.fill(
-          child: Image.asset(
-            'assets/images/home_background.png',
-            fit: BoxFit.cover,
-          ),
+          child: Image.asset('assets/images/home_background.png',
+              fit: BoxFit.cover),
         ),
-
-        // 메인 화면 내용
         Scaffold(
           backgroundColor: Colors.transparent,
           appBar: AppBar(
@@ -120,7 +136,16 @@ class _HomeScreenState extends State<HomeScreen> {
           body: Column(
             children: [
               const Spacer(),
-              // 캐릭터 이미지 중앙
+              if (serverResponse.isNotEmpty)
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24.0),
+                  child: Text(
+                    serverResponse,
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 18, color: Colors.black),
+                  ),
+                ),
+              const SizedBox(height: 16),
               Center(
                 child: Image.asset(
                   'assets/images/character.png',
@@ -129,11 +154,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ),
               const SizedBox(height: 20),
-              // 음성 인식 텍스트
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 24.0),
                 child: Text(
-                  recognizedText.isEmpty ? '음성 인식 텍스트가 없습니다.' : recognizedText,
+                  recognizedText.isEmpty ? ' ' : recognizedText,
                   textAlign: TextAlign.center,
                   style: const TextStyle(fontSize: 18, color: Colors.black),
                 ),
@@ -149,7 +173,6 @@ class _HomeScreenState extends State<HomeScreen> {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  // 마이페이지
                   ElevatedButton.icon(
                     onPressed: () => context.push('/mypage'),
                     icon: const Icon(Icons.settings),
@@ -159,13 +182,11 @@ class _HomeScreenState extends State<HomeScreen> {
                       foregroundColor: Colors.white,
                     ),
                   ),
-                  // 마이크 버튼
                   FloatingActionButton(
                     onPressed: isListening ? _stopListening : _startListening,
                     child: Icon(isListening ? Icons.stop : Icons.mic),
                     backgroundColor: const Color.fromARGB(255, 130, 130, 130),
                   ),
-                  // 상태 페이지
                   ElevatedButton.icon(
                     onPressed: () => context.push('/user'),
                     icon: const Icon(Icons.bar_chart),

@@ -1,10 +1,11 @@
 import 'package:dio/dio.dart';
-import 'package:minibuddy/utils/api_client.dart';
 
 class ChatApi {
   final Dio dio;
 
   ChatApi(this.dio);
+
+  static const String firebaseToken = 'YOUR_HARDCODED_FIREBASE_ID_TOKEN';
 
   // 일반 대화 요청 (chatCount < 10)
   Future<Map<String, dynamic>> sendChatRequest(String chat) async {
@@ -15,8 +16,8 @@ class ChatApi {
       },
       options: Options(
         headers: {
-          'X-Chat-Request-Type': 'qe',
-          'Authorization': 'Bearer YOUR_FIREBASE_ID_TOKEN',
+          'Authorization': 'Bearer $firebaseToken',
+          // 일반 대화 요청은 X-Chat-Request-Type 헤더 생략
         },
       ),
     );
@@ -32,8 +33,8 @@ class ChatApi {
       },
       options: Options(
         headers: {
+          'Authorization': 'Bearer $firebaseToken',
           'X-Chat-Request-Type': 'memory-question',
-          'Authorization': 'Bearer YOUR_FIREBASE_ID_TOKEN',
         },
       ),
     );
@@ -51,7 +52,7 @@ class ChatApi {
       },
       options: Options(
         headers: {
-          'Authorization': 'Bearer YOUR_FIREBASE_ID_TOKEN',
+          'Authorization': 'Bearer $firebaseToken',
         },
       ),
     );
