@@ -166,9 +166,9 @@ class _UserScreenState extends State<UserScreen> {
             Text(
               label,
               style: TextStyle(
-                fontSize: 18.sp,
-                fontWeight: FontWeight.bold,
-              ),
+                  fontSize: 18.sp,
+                  fontWeight: FontWeight.bold,
+                  color: Colors.grey[850]),
             ),
             SizedBox(height: 10.h),
             Image.asset(
@@ -177,12 +177,12 @@ class _UserScreenState extends State<UserScreen> {
               height: 100.w,
               fit: BoxFit.contain,
             ),
-            SizedBox(height: 2.h),
+            SizedBox(height: 5.h),
             Text(
-              'Learn more',
+              'Learn more', //Learn more
               style: TextStyle(
                 fontSize: 12.sp,
-                color: Colors.grey[800],
+                color: Colors.grey[600],
                 fontFamily: 'Pretendard',
               ),
             ),
