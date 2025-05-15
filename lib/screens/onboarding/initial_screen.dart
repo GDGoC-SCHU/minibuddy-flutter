@@ -13,7 +13,7 @@ class InitialScreen extends StatelessWidget {
           // 배경 이미지
           Positioned.fill(
             child: Image.asset(
-              'assets/onboarding/background.png',
+              'assets/images/background.png',
               fit: BoxFit.cover,
             ),
           ),
@@ -27,7 +27,7 @@ class InitialScreen extends StatelessWidget {
                   SizedBox(height: 60.h),
                   // 버니 이미지
                   Image.asset(
-                    'assets/onboarding/bunny.png',
+                    'assets/images/bunny.png',
                     width: 280.w,
                   ),
                   SizedBox(height: 30.h),
@@ -45,7 +45,7 @@ class InitialScreen extends StatelessWidget {
                   SizedBox(height: 8.h),
                   // 로고
                   Image.asset(
-                    'assets/onboarding/logo.png',
+                    'assets/images/logo.png',
                     width: 400.w,
                   ),
                   SizedBox(height: 5.h),
@@ -70,7 +70,7 @@ class InitialScreen extends StatelessWidget {
                     child: SizedBox(
                       width: 280.w,
                       child: Image.asset(
-                        'assets/onboarding/google_signin_button.png',
+                        'assets/images/google_signin_button.png',
                         fit: BoxFit.fill,
                       ),
                     ),

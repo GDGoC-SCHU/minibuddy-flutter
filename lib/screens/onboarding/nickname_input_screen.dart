@@ -43,62 +43,104 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
   Widget build(BuildContext context) {
     final bool isEditing = widget.isFromEdit;
 
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Set Your Nickname'),
-        // 🙌 🙌 🙌 여기 false로 변경할 것!!
-        automaticallyImplyLeading: true,
-      ),
-      body: Padding(
-        padding: EdgeInsets.all(24.w),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'What should we call you?',
-              style: TextStyle(
-                fontSize: 22.sp,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            SizedBox(height: 30.h),
-            TextField(
-              controller: _controller,
-              onChanged: _onChanged,
-              decoration: InputDecoration(
-                hintText: 'Enter your nickname',
-                enabledBorder: OutlineInputBorder(
-                  borderSide: const BorderSide(color: Colors.grey),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                focusedBorder: OutlineInputBorder(
-                  borderSide: BorderSide(color: Colors.grey[800]!),
-                  borderRadius: BorderRadius.circular(12.r),
-                ),
-                contentPadding: EdgeInsets.symmetric(
-                  horizontal: 16.w,
-                  vertical: 14.h,
-                ),
-              ),
-            ),
-            SizedBox(height: 40.h),
-            SizedBox(
-              width: double.infinity,
-              height: 48.h,
-              child: ElevatedButton(
-                onPressed: _nickname.isEmpty ? null : _onSubmit,
-                style: ElevatedButton.styleFrom(
-                  backgroundColor:
-                      _nickname.isEmpty ? Colors.grey[300] : Colors.black,
-                  foregroundColor: Colors.white,
-                  textStyle: TextStyle(fontSize: 16.sp),
-                ),
-                child: Text(isEditing ? 'Save' : 'Continue'),
-              ),
-            ),
-          ],
+    return Stack(
+      children: [
+        // 전체 화면 배경 이미지
+        Positioned.fill(
+          child: Image.asset(
+            'assets/images/background.png',
+            fit: BoxFit.cover,
+          ),
         ),
-      ),
+
+        // Scaffold 위에 배경 이미지가 깔린 구조
+        Scaffold(
+          backgroundColor: Colors.transparent, // 배경 투명하게
+          appBar: AppBar(
+            backgroundColor: Colors.transparent, // AppBar도 투명
+            elevation: 0,
+            // 🙌 🙌 🙌 여기 false로 변경할 것!!
+            automaticallyImplyLeading: true,
+          ),
+          body: SingleChildScrollView(
+            padding: EdgeInsets.all(24.w),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: [
+                SizedBox(height: 120.h),
+                Text(
+                  'What should we\ncall you?',
+                  style: TextStyle(
+                    fontSize: 40.sp,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.grey[800],
+                    fontFamily: 'Pretendard',
+                  ),
+                ),
+                SizedBox(height: 180.h),
+                TextField(
+                  controller: _controller,
+                  onChanged: _onChanged,
+                  decoration: InputDecoration(
+                    hintText: 'Enter your nickname',
+                    hintStyle:
+                        TextStyle(color: Colors.grey[700], fontSize: 16.sp),
+                    enabledBorder: OutlineInputBorder(
+                      // 테두리 굵기
+                      borderSide: BorderSide(
+                        color: Colors.grey[700]!,
+                        width: 1.2,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    focusedBorder: OutlineInputBorder(
+                      // 테두리 굵기
+                      borderSide: BorderSide(
+                        color: Colors.grey[800]!,
+                        width: 1.5,
+                      ),
+                      borderRadius: BorderRadius.circular(12.r),
+                    ),
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 16.w,
+                      vertical: 14.h,
+                    ),
+                  ),
+                  style: const TextStyle(color: Color.fromARGB(255, 0, 0, 0)),
+                ),
+                SizedBox(height: 40.h),
+                SizedBox(
+                  width: double.infinity,
+                  height: 48.h,
+                  child: ElevatedButton(
+                    onPressed: _nickname.isEmpty ? null : _onSubmit,
+                    style: ButtonStyle(
+                      backgroundColor: MaterialStateProperty.resolveWith<Color>(
+                        (Set<MaterialState> states) {
+                          if (states.contains(MaterialState.disabled)) {
+                            return const Color.fromARGB(
+                                159, 109, 109, 109)!; // 비활성화일 때 색상 지정
+                          }
+                          return const Color.fromARGB(
+                              255, 55, 55, 55)!; // 활성화일 때
+                        },
+                      ),
+                      foregroundColor: MaterialStateProperty.all(
+                          const Color.fromARGB(255, 255, 255, 255)),
+                      textStyle: MaterialStateProperty.all(TextStyle(
+                        fontSize: 16.sp,
+                        fontWeight: FontWeight.w500,
+                        fontFamily: 'Pretendard',
+                      )),
+                    ),
+                    child: Text(isEditing ? 'Save' : 'Continue'),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
