@@ -217,7 +217,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
           return Scaffold(
             appBar: AppBar(
               title: Text('My Page',
-                  style: TextStyle(fontFamily: 'Pretendard', fontSize: 18.sp)),
+                  style: TextStyle(fontFamily: 'Pretendard', fontSize: 20.sp)),
               backgroundColor: Colors.transparent,
               elevation: 0,
             ),

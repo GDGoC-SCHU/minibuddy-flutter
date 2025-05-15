@@ -100,6 +100,15 @@ fonts:
         weight: 800
       - asset: assets/fonts/Pretendard-Black.ttf
         weight: 900
+  - family: Calsans
+    fonts:
+      - asset: assets/fonts/CalSans-Regular.ttf
+  - family: Dynapuff
+    fonts:
+      - asset: assets/fonts/DynaPuff-Regular.ttf
+  - family: Poetsenone
+    fonts:
+      - asset: assets/fonts/PoetsenOne-Regular.ttf
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package

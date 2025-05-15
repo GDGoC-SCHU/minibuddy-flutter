@@ -40,21 +40,38 @@ class _UserScreenState extends State<UserScreen> {
       value: _bloc,
       child: Scaffold(
         appBar: AppBar(
-          title: Text('Emotional Status', style: TextStyle(fontSize: 20.sp)),
+          title: Text('Status', style: TextStyle(fontSize: 20.sp)),
+          backgroundColor: Colors.transparent,
           elevation: 0,
         ),
-        body: BlocBuilder<UserBloc, UserState>(
-          builder: (context, state) {
-            if (state is UserLoading) {
-              return const Center(child: CircularProgressIndicator());
-            } else if (state is UserLoaded) {
-              final status = state.status;
-              final flow = state.flow;
-              final distribution = state.distribution;
-              return _buildContent(status, flow, distribution);
-            }
-            return const SizedBox.shrink();
-          },
+        extendBodyBehindAppBar: true,
+        backgroundColor: Colors.transparent,
+        body: Stack(
+          children: [
+            // 배경 이미지
+            Positioned.fill(
+              child: Image.asset(
+                'assets/images/home_background.png', // 원하는 배경 이미지 경로
+                fit: BoxFit.cover,
+              ),
+            ),
+            // 기존 내용
+            BlocBuilder<UserBloc, UserState>(
+              builder: (context, state) {
+                if (state is UserLoading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (state is UserLoaded) {
+                  final status = state.status;
+                  final flow = state.flow;
+                  final distribution = state.distribution;
+                  return SafeArea(
+                    child: _buildContent(status, flow, distribution),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
         ),
       ),
     );
@@ -87,10 +104,10 @@ class _UserScreenState extends State<UserScreen> {
       builder: (context, constraints) {
         return Center(
           child: Text(
-            "In total, you've had $totalChats conversations",
-            textAlign: TextAlign.center,
+            "$totalChats chats, \nhere's what we found.",
+            textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: constraints.maxWidth > 600 ? 30.sp : 25.sp,
+              fontSize: constraints.maxWidth > 600 ? 32.sp : 27.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -116,36 +133,61 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildScoreCard(String label, int score, String route) {
+    // 점수에 따라 이미지 선택
+    String imagePath;
+    if (score <= 12) {
+      imagePath = 'assets/images/blue.png';
+    } else if (score <= 20) {
+      imagePath = 'assets/images/yellow.png';
+    } else {
+      imagePath = 'assets/images/red.png';
+    }
+
     return InkWell(
       onTap: () => context.push(route),
-      child: Card(
-        elevation: 8,
-        shape: RoundedRectangleBorder(
+      child: Container(
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(205, 255, 255, 255),
           borderRadius: BorderRadius.circular(15.r),
-        ),
-        color: Colors.blueAccent.withOpacity(0.1),
-        child: Padding(
-          padding: EdgeInsets.all(16.w),
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Text(
-                label,
-                style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              SizedBox(height: 8.h),
-              Text(
-                '$score',
-                style: TextStyle(
-                  fontSize: 28.sp,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ],
+          border: Border.all(
+            color: Colors.grey.withOpacity(0.2),
           ),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.08),
+              blurRadius: 8,
+              offset: const Offset(0, 4),
+            ),
+          ],
+        ),
+        padding: EdgeInsets.all(16.w),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              label,
+              style: TextStyle(
+                fontSize: 18.sp,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            SizedBox(height: 8.h),
+            Image.asset(
+              imagePath,
+              width: 60.w,
+              height: 60.w,
+              fit: BoxFit.contain,
+            ),
+            SizedBox(height: 12.h),
+            Text(
+              'Learn more',
+              style: TextStyle(
+                fontSize: 14.sp,
+                color: Colors.grey[600],
+                fontFamily: 'Pretendard',
+              ),
+            ),
+          ],
         ),
       ),
     );
