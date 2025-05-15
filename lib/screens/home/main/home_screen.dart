@@ -131,18 +131,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 if (mounted) setState(() => recognizedText = "");
               }
             }
-
-            await ttsService.speak(response, onComplete: () async {
-              if (mounted) {
-                setState(() {
-                  isTtsPlaying = false;
-                  isListening = false;
-                });
-                // 살짝 delay 후 텍스트/파형 사라지게
-                await Future.delayed(const Duration(milliseconds: 500));
-                if (mounted) setState(() => recognizedText = "");
-              }
-            });
           }
         }
       },
