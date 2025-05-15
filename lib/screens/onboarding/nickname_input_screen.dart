@@ -59,8 +59,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
           appBar: AppBar(
             backgroundColor: Colors.transparent, // AppBar도 투명
             elevation: 0,
-            // 🙌 🙌 🙌 여기 false로 변경할 것!!
-            automaticallyImplyLeading: true,
+            automaticallyImplyLeading: false,
           ),
           body: SingleChildScrollView(
             padding: EdgeInsets.all(24.w),
@@ -69,7 +68,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
               children: [
                 SizedBox(height: 120.h),
                 Text(
-                  'What should we\ncall you?',
+                  'Hi! What should\nwe call you?',
                   style: TextStyle(
                     fontSize: 40.sp,
                     fontWeight: FontWeight.bold,
