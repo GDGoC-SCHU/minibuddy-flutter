@@ -107,7 +107,7 @@ class _UserScreenState extends State<UserScreen> {
             "$totalChats chats, \nhere's what we found.",
             textAlign: TextAlign.left,
             style: TextStyle(
-              fontSize: constraints.maxWidth > 600 ? 32.sp : 27.sp,
+              fontSize: 27.sp,
               fontWeight: FontWeight.bold,
             ),
           ),
@@ -160,7 +160,6 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ],
         ),
-        padding: EdgeInsets.all(16.w),
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
@@ -171,19 +170,19 @@ class _UserScreenState extends State<UserScreen> {
                 fontWeight: FontWeight.bold,
               ),
             ),
-            SizedBox(height: 8.h),
+            SizedBox(height: 10.h),
             Image.asset(
               imagePath,
-              width: 60.w,
-              height: 60.w,
+              width: 100.w,
+              height: 100.w,
               fit: BoxFit.contain,
             ),
-            SizedBox(height: 12.h),
+            SizedBox(height: 2.h),
             Text(
               'Learn more',
               style: TextStyle(
-                fontSize: 14.sp,
-                color: Colors.grey[600],
+                fontSize: 12.sp,
+                color: Colors.grey[800],
                 fontFamily: 'Pretendard',
               ),
             ),
