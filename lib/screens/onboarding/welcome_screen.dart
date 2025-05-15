@@ -27,7 +27,7 @@ class WelcomeScreen extends StatelessWidget {
             children: [
               // 마스코트 이미지 (있다면)
               Image.asset(
-                'assets/onboarding/bunny1.png',
+                'assets/images/bunny.png',
                 width: 200.w,
                 height: 200.h,
               ),
