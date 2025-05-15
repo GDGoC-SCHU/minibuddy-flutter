@@ -117,7 +117,12 @@ class _HomeScreenState extends State<HomeScreen> {
                     isListening = false;
                   });
                   await Future.delayed(const Duration(milliseconds: 500));
-                  if (mounted) setState(() => recognizedText = "");
+                  if (mounted) {
+                    setState(() {
+                      recognizedText = "";
+                      serverResponse = "";
+                    });
+                  }
                 }
               });
             } catch (e) {
@@ -128,7 +133,12 @@ class _HomeScreenState extends State<HomeScreen> {
                   isListening = false;
                 });
                 await Future.delayed(const Duration(milliseconds: 500));
-                if (mounted) setState(() => recognizedText = "");
+                if (mounted) {
+                  setState(() {
+                    recognizedText = "";
+                    serverResponse = "";
+                  });
+                }
               }
             }
           }
