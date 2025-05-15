@@ -24,51 +24,26 @@ class InitialScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  SizedBox(height: 60.h),
+                  SizedBox(height: 70.h),
                   // 버니 이미지
                   Image.asset(
                     'assets/images/bunny.png',
-                    width: 280.w,
+                    width: 250.w,
                   ),
-                  SizedBox(height: 30.h),
-                  // 부제
-                  // Text(
-                  //   'Your tiny companion, always by your side',
-                  //   style: TextStyle(
-                  //     fontSize: 13.sp,
-                  //     color: Colors.white,
-                  //     fontWeight: FontWeight.w900,
-                  //     fontFamily: 'Pretendard',
-                  //   ),
-                  //   textAlign: TextAlign.center,
-                  // ),
-                  SizedBox(height: 8.h),
+                  SizedBox(height: 38.h),
                   // 로고
                   Image.asset(
                     'assets/images/logo.png',
-                    width: 400.w,
+                    width: 350.w,
                   ),
                   SizedBox(height: 5.h),
-                  // 설명 텍스트
-                  // Text(
-                  //   "Here for you — anytime, any mood",
-                  //   textAlign: TextAlign.center,
-                  //   style: TextStyle(
-                  //     fontSize: 16.sp,
-                  //     color: Colors.black,
-                  //     fontWeight: FontWeight.bold,
-                  //     fontFamily: 'Pretendard',
-                  //   ),
-                  //   maxLines: 1,
-                  //   overflow: TextOverflow.ellipsis,
-                  // ),
                   // 구글 로그인 버튼 (→ 닉네임 입력 화면으로 이동)
                   GestureDetector(
                     onTap: () {
                       context.push('/onboarding/nickname');
                     },
                     child: SizedBox(
-                      width: 280.w,
+                      width: 290.w,
                       child: Image.asset(
                         'assets/images/google_signin_button.png',
                         fit: BoxFit.fill,

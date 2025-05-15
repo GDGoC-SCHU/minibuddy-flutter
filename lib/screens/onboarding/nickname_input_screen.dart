@@ -48,7 +48,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
       onWillPop: () async => widget.isFromEdit, // 뒤로가기 허용 여부 제어
       child: Stack(
         children: [
-          // ✅ 배경 이미지
+          // 배경 이미지
           Positioned.fill(
             child: Image.asset(
               'assets/images/background.png',
@@ -56,7 +56,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
             ),
           ),
 
-          // ✅ 본문 Scaffold
+          // 본문 Scaffold
           Scaffold(
             backgroundColor: Colors.transparent,
             appBar: AppBar(
@@ -86,13 +86,13 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
                     decoration: InputDecoration(
                       hintText: 'Enter your nickname',
                       hintStyle: TextStyle(
-                        color: Colors.grey[700],
+                        color: Colors.grey[800],
                         fontSize: 16.sp,
                         fontFamily: 'Pretendard',
                       ),
                       enabledBorder: OutlineInputBorder(
                         borderSide: BorderSide(
-                          color: Colors.grey[700]!,
+                          color: Colors.grey[800]!,
                           width: 1.2,
                         ),
                         borderRadius: BorderRadius.circular(12.r),
@@ -110,7 +110,7 @@ class _NicknameInputScreenState extends State<NicknameInputScreen> {
                       ),
                     ),
                     style: const TextStyle(
-                      color: Color.fromARGB(255, 0, 0, 0),
+                      color: Colors.black,
                       fontFamily: 'Pretendard',
                     ),
                   ),

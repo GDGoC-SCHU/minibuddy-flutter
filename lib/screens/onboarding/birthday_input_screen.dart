@@ -105,7 +105,7 @@ class _BirthdayInputScreenState extends State<BirthdayInputScreen> {
                         EdgeInsets.symmetric(vertical: 14.h, horizontal: 16.w),
                     decoration: BoxDecoration(
                       border: Border.all(
-                        color: Colors.grey[700]!,
+                        color: Colors.grey[800]!,
                         width: 1.2,
                       ),
                       borderRadius: BorderRadius.circular(12.r),
@@ -117,7 +117,7 @@ class _BirthdayInputScreenState extends State<BirthdayInputScreen> {
                         fontFamily: 'Pretendard',
                         color: _selectedDate != null
                             ? Colors.black
-                            : Colors.grey.shade500,
+                            : Colors.grey[800],
                       ),
                     ),
                   ),
