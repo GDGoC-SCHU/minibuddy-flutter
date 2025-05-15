@@ -85,7 +85,7 @@ final GoRouter router = GoRouter(
     // User
     GoRoute(
       path: '/user',
-      builder: (context, state) => const UserScreen(),
+      builder: (context, state) => const UserScreen(), // BlocProvider 제거됨
     ),
 
     GoRoute(

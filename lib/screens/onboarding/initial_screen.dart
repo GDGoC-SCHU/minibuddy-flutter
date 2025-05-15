@@ -24,53 +24,51 @@ class InitialScreen extends StatelessWidget {
               child: Column(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
+                  SizedBox(height: 60.h),
                   // 버니 이미지
                   Image.asset(
                     'assets/onboarding/bunny.png',
-                    width: 270.w,
-                    height: 270.h,
+                    width: 280.w,
                   ),
-                  SizedBox(height: 80.h),
+                  SizedBox(height: 30.h),
                   // 부제
-                  Text(
-                    'Your tiny companion, always by your side',
-                    style: TextStyle(
-                      fontSize: 13.sp,
-                      color: Colors.white,
-                      fontWeight: FontWeight.w900,
-                      fontFamily: 'Pretendard',
-                    ),
-                    textAlign: TextAlign.center,
-                  ),
+                  // Text(
+                  //   'Your tiny companion, always by your side',
+                  //   style: TextStyle(
+                  //     fontSize: 13.sp,
+                  //     color: Colors.white,
+                  //     fontWeight: FontWeight.w900,
+                  //     fontFamily: 'Pretendard',
+                  //   ),
+                  //   textAlign: TextAlign.center,
+                  // ),
                   SizedBox(height: 8.h),
                   // 로고
                   Image.asset(
-                    'assets/onboarding/logo_w.png',
-                    width: 300.w,
+                    'assets/onboarding/logo.png',
+                    width: 400.w,
                   ),
-                  SizedBox(height: 20.h),
+                  SizedBox(height: 5.h),
                   // 설명 텍스트
-                  Text(
-                    "MiniBuddy listens, whenever you need",
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 16.sp,
-                      color: Colors.black,
-                      fontWeight: FontWeight.bold,
-                      fontFamily: 'Pretendard',
-                    ),
-                    maxLines: 2,
-                    overflow: TextOverflow.ellipsis,
-                  ),
-                  SizedBox(height: 60.h),
+                  // Text(
+                  //   "Here for you — anytime, any mood",
+                  //   textAlign: TextAlign.center,
+                  //   style: TextStyle(
+                  //     fontSize: 16.sp,
+                  //     color: Colors.black,
+                  //     fontWeight: FontWeight.bold,
+                  //     fontFamily: 'Pretendard',
+                  //   ),
+                  //   maxLines: 1,
+                  //   overflow: TextOverflow.ellipsis,
+                  // ),
                   // 구글 로그인 버튼 (→ 닉네임 입력 화면으로 이동)
                   GestureDetector(
                     onTap: () {
                       context.push('/onboarding/nickname');
                     },
                     child: SizedBox(
-                      width: 250.w,
-                      height: 55.h,
+                      width: 280.w,
                       child: Image.asset(
                         'assets/onboarding/google_signin_button.png',
                         fit: BoxFit.fill,

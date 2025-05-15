@@ -1,99 +1,115 @@
 import 'package:flutter/material.dart';
-import 'package:go_router/go_router.dart';
-import 'package:minibuddy/services/chat/chat_api.dart';
-import 'package:minibuddy/services/chat/chat_repository.dart';
-import 'package:minibuddy/services/chat/chat_service.dart';
-import 'package:minibuddy/utils/handle_request.dart';
-import 'package:minibuddy/utils/api_client.dart';
+import 'package:speech_to_text/speech_to_text.dart' as stt;
 
-class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+class HomeScreen extends StatefulWidget {
+  const HomeScreen({Key? key}) : super(key: key);
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final stt.SpeechToText _speech = stt.SpeechToText();
+  bool isListening = false;
+  bool speechAvailable = false;
+  String recognizedText = "";
+
+  @override
+  void initState() {
+    super.initState();
+    _initializeSpeech(); // 마이크 권한은 speech_to_text가 자체 요청함
+  }
+
+  /// STT 초기화 (권한 요청도 자동 포함)
+  void _initializeSpeech() async {
+    speechAvailable = await _speech.initialize(
+      onError: (val) => print('🛑 Speech error: $val'),
+      onStatus: (status) => print('🎙️ Speech status: $status'),
+    );
+
+    if (speechAvailable) {
+      print("✅ STT 초기화 성공 및 마이크 권한 허용됨");
+    } else {
+      print("❌ STT 초기화 실패 또는 권한 거부됨");
+      _showPermissionDialog();
+    }
+  }
+
+  /// 음성 인식 시작
+  void _startListening() async {
+    if (!speechAvailable) {
+      print("⚠️ 음성 인식 기능이 초기화되지 않음");
+      return;
+    }
+
+    setState(() {
+      isListening = true;
+      recognizedText = "";
+    });
+
+    await _speech.listen(
+      onResult: (result) {
+        setState(() {
+          recognizedText = result.recognizedWords;
+        });
+      },
+    );
+  }
+
+  /// 음성 인식 중단
+  void _stopListening() async {
+    await _speech.stop();
+    setState(() {
+      isListening = false;
+    });
+  }
+
+  /// 설정 이동 다이얼로그
+  void _showPermissionDialog() {
+    showDialog(
+      context: context,
+      builder: (context) => AlertDialog(
+        title: const Text("권한 요청"),
+        content: const Text("마이크 권한이 거부되었습니다. 설정에서 권한을 허용해주세요."),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+              stt.SpeechToText().stop(); // 권한 없을 때 STT 종료
+              stt.SpeechToText().cancel();
+            },
+            child: const Text("확인"),
+          ),
+        ],
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: const Text('HomeScreen'),
-        automaticallyImplyLeading: false,
+        title: const Text('음성 인식 테스트'),
+        backgroundColor: Colors.pink,
       ),
-      body: const Center(
-        child: Text('HomeScreen 화면입니다'),
-      ),
-      bottomNavigationBar: BottomAppBar(
-        color: Colors.white,
-        elevation: 8,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              // 마이페이지 버튼 (좌측)
-              ElevatedButton.icon(
-                onPressed: () {
-                  context.push('/mypage');
-                },
-                icon: const Icon(Icons.settings),
-                label: const Text('My Page'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
-                  foregroundColor: Colors.white,
-                ),
-              ),
-              // 마이크 버튼 (가운데)
-              FloatingActionButton(
-                onPressed: () {
-                  // STT (Speech-to-Text) 음성 인식 부분
-                  handleRequest<String>(
-                    context: context,
-                    fetch: () async {
-                      // 여기서 STT로 음성 인식 결과를 받음
-                      final text = await getSpeechText(); // 음성 텍스트 변환
-                      return text; // 변환된 텍스트 리턴
-                    },
-                    onSuccess: (data) {
-                      // 데이터에 따른 API 요청
-                      final chatCount = 5; // 예시 chatCount, 실제로는 상태에서 가져와야 함
-                      final chatService = ChatService(
-                          ChatRepository(ChatApi(ApiClient.instance)));
-
-                      chatService
-                          .handleChatRequest(data, chatCount)
-                          .then((response) {
-                        print("Server response: $response");
-                      });
-                    },
-                    retry: () {
-                      // 실패 시 재시도 로직
-                      print("Retrying...");
-                    },
-                  );
-                },
-                child: const Icon(Icons.mic),
-                backgroundColor:
-                    const Color.fromARGB(255, 130, 130, 130), // 마이크 버튼 배경 색
-              ),
-              // 유저 상태 버튼 (우측)
-              ElevatedButton.icon(
-                onPressed: () {
-                  context.push('/user');
-                },
-                icon: const Icon(Icons.bar_chart),
-                label: const Text('Status'),
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.grey[800],
-                  foregroundColor: Colors.white,
-                ),
-              ),
-            ],
-          ),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Text(
+              recognizedText.isEmpty ? '음성 인식 텍스트가 없습니다.' : recognizedText,
+              textAlign: TextAlign.center,
+              style: const TextStyle(fontSize: 18),
+            ),
+            const SizedBox(height: 30),
+            FloatingActionButton(
+              onPressed: isListening ? _stopListening : _startListening,
+              child: Icon(isListening ? Icons.stop : Icons.mic, size: 36),
+              backgroundColor: Colors.pink,
+            ),
+          ],
         ),
       ),
     );
-  }
-
-  // STT 기능을 처리할 함수
-  Future<String> getSpeechText() async {
-    // 여기서 Google STT 로직을 처리하고 음성 데이터를 텍스트로 변환
-    return "Sample chat text"; // 예시 텍스트
   }
 }
