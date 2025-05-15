@@ -23,6 +23,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
   bool isListening = false;
   bool speechAvailable = false;
+  bool isTtsPlaying = false;
   String recognizedText = "";
   String finalText = "";
   String serverResponse = "";
@@ -37,29 +38,34 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('🧨 Speech error: \${val.errorMsg}');
+        print('🧨 Speech error: ${val.errorMsg}');
         if (val.errorMsg == 'error_no_match') {
           setState(() => isListening = false);
           return;
         }
       },
       onStatus: (status) async {
-        print('🎙️ Speech status: \$status');
+        print('🎙️ Speech status: $status');
         if (status == 'done' && !hasSentToServer) {
           hasSentToServer = true;
           if (finalText.isNotEmpty) {
-            print('📤 Sending to server: "\$finalText"');
+            print('📤 Sending to server: "$finalText"');
             final response = await chatService.handleChatRequest(finalText, 0);
-            print('📥 Server response: \$response');
+            print('📥 Server response: $response');
             setState(() {
               serverResponse = response;
+              isTtsPlaying = true;
             });
-            await ttsService.speak(response);
+            await ttsService.speak(response, onComplete: () {
+              if (mounted) {
+                setState(() {
+                  isTtsPlaying = false;
+                  isListening = false;
+                });
+              }
+            });
           } else {
             print('⚠️ No text recognized to send');
-          }
-          if (mounted) {
-            setState(() => isListening = false);
           }
         }
       },
@@ -74,7 +80,7 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   Future<void> _startListening() async {
-    if (!speechAvailable) return;
+    if (!speechAvailable || isTtsPlaying) return;
 
     setState(() {
       isListening = true;
@@ -88,7 +94,7 @@ class _HomeScreenState extends State<HomeScreen> {
       pauseFor: const Duration(seconds: 3),
       onResult: (result) {
         final text = result.recognizedWords;
-        print('🨠 Recognized: \$text');
+        print('🨠 Recognized: $text');
 
         if (text.trim().isNotEmpty) {
           finalText = text;
@@ -189,7 +195,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     ),
                   ),
                   FloatingActionButton(
-                    onPressed: isListening ? _stopListening : _startListening,
+                    onPressed:
+                        isListening || isTtsPlaying ? null : _startListening,
                     child: Icon(isListening ? Icons.stop : Icons.mic),
                     backgroundColor: const Color.fromARGB(255, 130, 130, 130),
                   ),
