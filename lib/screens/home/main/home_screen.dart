@@ -41,56 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
   void _initializeSpeech() async {
     speechAvailable = await _speech.initialize(
       onError: (val) {
-        print('🧨 Speech error: \${val.errorMsg}');
-        if (val.errorMsg == 'error_no_match') {
-          setState(() => isListening = false);
-          return;
-        }
+        print('🧨 Speech error: ${val.errorMsg}');
       },
-      onStatus: (status) async {
-        print('🎙️ Speech status: \$status');
-        if (status == 'done' && !hasSentToServer) {
-          hasSentToServer = true;
-          if (finalText.isNotEmpty) {
-            print('📤 Sending to server: "\$finalText"');
-            final response = await chatService.handleChatRequest(finalText, 0);
-            print('📥 Server response: \$response');
-
-            setState(() {
-              serverResponse = response;
-              isTtsPlaying = true;
-            });
-
-            try {
-              await ttsService.speak(response, onComplete: () {
-                if (mounted) {
-                  setState(() {
-                    isTtsPlaying = false;
-                    isListening = false;
-                  });
-                }
-              });
-            } catch (e) {
-              print('❌ TTS 오류 발생: \$e');
-              if (mounted) {
-                setState(() {
-                  isTtsPlaying = false;
-                  isListening = false;
-                });
-              } else {
-                print('⚠️ No text recognized to send');
-                setState(() => isListening = false);
-              }
-            } finally {
-              if (mounted) {
-                setState(() {
-                  isTtsPlaying = false;
-                  isListening = false;
-                });
-              }
-            }
-          }
-        }
+      onStatus: (status) {
+        print('🎙️ Speech status: $status');
+        // 더 이상 'done'에서 처리 안함!
       },
     );
 
@@ -115,13 +70,62 @@ class _HomeScreenState extends State<HomeScreen> {
 
     await _speech.listen(
       pauseFor: const Duration(seconds: 2),
-      onResult: (result) {
+      listenFor: const Duration(seconds: 10),
+      partialResults: true,
+      onResult: (result) async {
         final text = result.recognizedWords;
-        print('🨠 Recognized: \$text');
+        print('📝 onResult: $text');
 
         if (text.trim().isNotEmpty) {
-          finalText = text;
           setState(() => recognizedText = text);
+          finalText = text;
+
+          if (result.finalResult && !hasSentToServer) {
+            hasSentToServer = true;
+
+            print('📤 서버 전송: "$finalText"');
+            final response = await chatService.handleChatRequest(finalText, 0);
+
+            setState(() {
+              serverResponse = response;
+              isTtsPlaying = true;
+            });
+
+            try {
+              await ttsService.speak(response, onComplete: () async {
+                if (mounted) {
+                  setState(() {
+                    isTtsPlaying = false;
+                    isListening = false;
+                  });
+                  await Future.delayed(const Duration(milliseconds: 500));
+                  if (mounted) setState(() => recognizedText = "");
+                }
+              });
+            } catch (e) {
+              print('❌ TTS 오류 발생: $e');
+              if (mounted) {
+                setState(() {
+                  isTtsPlaying = false;
+                  isListening = false;
+                });
+                await Future.delayed(const Duration(milliseconds: 500));
+                if (mounted) setState(() => recognizedText = "");
+              }
+            }
+
+            await ttsService.speak(response, onComplete: () async {
+              if (mounted) {
+                setState(() {
+                  isTtsPlaying = false;
+                  isListening = false;
+                });
+                // 살짝 delay 후 텍스트/파형 사라지게
+                await Future.delayed(const Duration(milliseconds: 500));
+                if (mounted) setState(() => recognizedText = "");
+              }
+            });
+          }
         }
       },
     );
