@@ -160,20 +160,61 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
         Scaffold(
           backgroundColor: Colors.transparent,
-          appBar: AppBar(
-            title: const Text('HomeScreen'),
-            backgroundColor: Colors.transparent,
-            elevation: 0,
-            automaticallyImplyLeading: false,
+
+          body: SizedBox(
+            child: HomeBody(
+              serverResponse: serverResponse,
+            ),
           ),
-          body: HomeBody(
-            recognizedText: recognizedText,
-            serverResponse: serverResponse,
+
+          floatingActionButton: Align(
+            alignment: Alignment.bottomCenter,
+            child: Transform.translate(
+              offset: const Offset(0, -35),
+              child: Container(
+                width: 80,
+                height: 80,
+                decoration: BoxDecoration(
+                  color: const Color.fromARGB(255, 255, 208, 106),
+                  shape: BoxShape.circle,
+                  border: Border.all(
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    width: 6,
+                  ),
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.black.withOpacity(0.15),
+                      blurRadius: 8,
+                      offset: const Offset(0, 4),
+                    ),
+                  ],
+                ),
+                child: FloatingActionButton(
+                  onPressed:
+                      isListening || isTtsPlaying ? null : _startListening,
+                  backgroundColor: Colors.transparent,
+                  elevation: 0,
+                  shape: const CircleBorder(),
+                  child: Icon(
+                    isListening ? Icons.stop : Icons.mic,
+                    color: const Color.fromARGB(255, 255, 255, 255),
+                    size: 40,
+                  ),
+                ),
+              ),
+            ),
           ),
-          bottomNavigationBar: HomeBottomBar(
-            isListening: isListening,
-            isTtsPlaying: isTtsPlaying,
-            onMicPressed: _startListening,
+          floatingActionButtonLocation:
+              FloatingActionButtonLocation.centerDocked,
+
+          // Bottom navigation bar
+          bottomNavigationBar: SizedBox(
+            height: MediaQuery.of(context).size.height * 0.15,
+            child: HomeBottomBar(
+              isListening: isListening,
+              isTtsPlaying: isTtsPlaying,
+              onMicPressed: _startListening,
+            ),
           ),
         ),
       ],

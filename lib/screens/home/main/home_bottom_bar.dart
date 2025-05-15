@@ -16,34 +16,62 @@ class HomeBottomBar extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BottomAppBar(
+      shape: const CircularNotchedRectangle(),
+      notchMargin: 8,
       color: Colors.transparent,
       elevation: 8,
-      child: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+      child: Container(
+        height: 55,
+        margin: const EdgeInsets.symmetric(
+            horizontal: 16, vertical: 12), // 좌우 마진 줄임
+        padding: const EdgeInsets.symmetric(horizontal: 24),
+        decoration: BoxDecoration(
+          color: const Color.fromARGB(255, 255, 255, 255),
+          borderRadius: BorderRadius.circular(70),
+          boxShadow: [
+            BoxShadow(
+              color: Colors.black.withOpacity(0.1),
+              blurRadius: 10,
+              offset: const Offset(0, 3),
+            ),
+          ],
+        ),
         child: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            ElevatedButton.icon(
-              onPressed: () => context.push('/mypage'),
-              icon: const Icon(Icons.settings),
-              label: const Text('My Page'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                foregroundColor: Colors.white,
+            Expanded(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(70),
+                onTap: () => context.push('/mypage'),
+                child: Align(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'My Page',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
+                      color: Color.fromARGB(255, 120, 95, 60),
+                    ),
+                  ),
+                ),
               ),
             ),
-            FloatingActionButton(
-              onPressed: isListening || isTtsPlaying ? null : onMicPressed,
-              child: Icon(isListening ? Icons.stop : Icons.mic),
-              backgroundColor: const Color.fromARGB(255, 130, 130, 130),
-            ),
-            ElevatedButton.icon(
-              onPressed: () => context.push('/user'),
-              icon: const Icon(Icons.bar_chart),
-              label: const Text('Status'),
-              style: ElevatedButton.styleFrom(
-                backgroundColor: Colors.grey[800],
-                foregroundColor: Colors.white,
+            Expanded(
+              child: InkWell(
+                borderRadius: BorderRadius.circular(70),
+                onTap: () => context.push('/user'),
+                child: Align(
+                  alignment: Alignment.centerRight,
+                  child: Text(
+                    'Status',
+                    style: const TextStyle(
+                      fontSize: 20,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
+                      color: Color.fromARGB(255, 120, 95, 60),
+                    ),
+                  ),
+                ),
               ),
             ),
           ],

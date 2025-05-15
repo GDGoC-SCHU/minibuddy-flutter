@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:go_router/go_router.dart';
 
 // Onboarding
@@ -10,20 +9,13 @@ import 'package:minibuddy/screens/onboarding/keyword_input_screen.dart';
 import 'package:minibuddy/screens/onboarding/welcome_screen.dart';
 
 // Home
-import 'package:minibuddy/screens/home/home_screen.dart';
+import 'package:minibuddy/screens/home/main/home_screen.dart';
 
 // MyPage
 import 'package:minibuddy/screens/home/my_page_screen.dart';
-import 'package:minibuddy/blocs/profile/profile_bloc.dart';
-import 'package:minibuddy/blocs/profile/profile_event.dart';
-import 'package:minibuddy/data/profile/profile_repository.dart';
 
 // User
 import 'package:minibuddy/screens/user/user_screen.dart';
-
-import 'package:minibuddy/blocs/user/user_bloc.dart';
-import 'package:minibuddy/blocs/user/user_event.dart';
-import 'package:minibuddy/data/user/user_repository.dart';
 
 import 'package:minibuddy/screens/history/anxiety_detail_screen.dart';
 import 'package:minibuddy/screens/history/depression_detail_screen.dart';
