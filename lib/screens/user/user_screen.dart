@@ -72,6 +72,8 @@ class _UserScreenState extends State<UserScreen> {
                   final flow = state.flow;
                   final distribution = state.distribution;
                   return SafeArea(
+                    top: true,
+                    bottom: false,
                     child: _buildContent(status, flow, distribution),
                   );
                 }
