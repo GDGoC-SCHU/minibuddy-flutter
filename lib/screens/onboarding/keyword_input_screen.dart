@@ -68,10 +68,14 @@ class _KeywordInputScreenState extends State<KeywordInputScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Colors.transparent, // AppBar도 투명
+        backgroundColor: Colors.transparent,
         elevation: 0,
         automaticallyImplyLeading: true,
+        scrolledUnderElevation: 0,
+        surfaceTintColor: Colors.transparent,
       ),
+      backgroundColor: Colors.transparent,
+      resizeToAvoidBottomInset: false,
       extendBodyBehindAppBar: true, // 배경 이미지가 AppBar 뒤로도 보이도록
       body: Stack(
         children: [

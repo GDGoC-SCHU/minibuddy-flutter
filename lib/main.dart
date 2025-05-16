@@ -56,6 +56,7 @@ class MinibuddyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSwatch().copyWith(
             secondary: Colors.grey[400],
             primary: Colors.grey[800], // 포커스 및 인터랙션 색
+            surfaceTint: Colors.transparent,
           ),
         ),
         routerConfig: router,
