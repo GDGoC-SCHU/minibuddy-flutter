@@ -126,8 +126,7 @@ class EmotionFlowPainter extends CustomPainter {
     canvas.drawPath(strPath, strPaint);
 
     // ⬇ 2. 흰색 점은 마지막에 (맨 위에)
-    final pointPaint = Paint()
-      ..color = const Color.fromARGB(197, 255, 255, 255);
+    final pointPaint = Paint()..color = const Color.fromARGB(197, 0, 0, 0);
     for (final p in depPoints) {
       canvas.drawCircle(p, size.width * 0.008, pointPaint);
     }
@@ -151,7 +150,7 @@ class EmotionFlowPainter extends CustomPainter {
       );
     }
     final Paint zigzagPaint = Paint()
-      ..color = Colors.red
+      ..color = const Color.fromARGB(255, 255, 17, 0)
       ..strokeWidth = 4.w
       ..style = PaintingStyle.stroke;
     canvas.drawPath(zigzagPath, zigzagPaint);
