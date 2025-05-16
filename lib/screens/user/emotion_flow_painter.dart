@@ -85,7 +85,10 @@ class EmotionFlowPainter extends CustomPainter {
       final label = DateFormat('MM/dd').format(date);
       final labelSpan = TextSpan(
         text: label,
-        style: TextStyle(fontSize: 10.sp, color: Colors.grey[800]),
+        style: TextStyle(
+            fontSize: 10.sp,
+            color: Colors.grey[800],
+            fontWeight: FontWeight.w600),
       );
       final labelPainter = TextPainter(
         text: labelSpan,
