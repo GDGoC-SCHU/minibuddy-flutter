@@ -11,6 +11,7 @@ import 'package:minibuddy/models/emotion_flow_model.dart';
 import 'package:minibuddy/models/emotion_distribution_model.dart';
 import 'package:minibuddy/screens/user/emotion_distribution_painter.dart';
 import 'package:minibuddy/screens/user/emotion_flow_painter.dart';
+import 'package:flutter/services.dart';
 
 class UserScreen extends StatefulWidget {
   const UserScreen({super.key});
@@ -43,6 +44,12 @@ class _UserScreenState extends State<UserScreen> {
           title: Text('Status', style: TextStyle(fontSize: 20.sp)),
           backgroundColor: Colors.transparent,
           elevation: 0,
+          scrolledUnderElevation: 0, // 스크롤 시 배경/그림자 안 생기게
+          surfaceTintColor: Colors.transparent,
+          systemOverlayStyle: const SystemUiOverlayStyle(
+            statusBarColor: Colors.transparent,
+            statusBarIconBrightness: Brightness.dark, // 또는 light
+          ),
         ),
         extendBodyBehindAppBar: true,
         backgroundColor: Colors.transparent,
@@ -100,19 +107,19 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildTotalChats(int totalChats) {
-    return LayoutBuilder(
-      builder: (context, constraints) {
-        return Center(
-          child: Text(
-            "$totalChats chats, \nhere's what we found.",
-            textAlign: TextAlign.left,
-            style: TextStyle(
-              fontSize: 27.sp,
-              fontWeight: FontWeight.bold,
-            ),
-          ),
-        );
-      },
+    return Padding(
+      padding: EdgeInsets.symmetric(horizontal: 10.w), // 양옆 여백 최소화
+      child: Align(
+        alignment: Alignment.centerLeft,
+        child: Text(
+          "Here's what $totalChats\nchats say about you.",
+          style: TextStyle(
+              fontSize: 26.sp,
+              fontWeight: FontWeight.w700,
+              fontFamily: 'Pretendard',
+              color: Colors.grey[800]),
+        ),
+      ),
     );
   }
 
@@ -133,7 +140,6 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildScoreCard(String label, int score, String route) {
-    // 점수에 따라 이미지 선택
     String imagePath;
     if (score <= 12) {
       imagePath = 'assets/images/blue.png';
@@ -160,32 +166,36 @@ class _UserScreenState extends State<UserScreen> {
             ),
           ],
         ),
+        padding: EdgeInsets.symmetric(horizontal: 15.w, vertical: 12.h),
         child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Text(
-              label,
-              style: TextStyle(
-                  fontSize: 18.sp,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.grey[850]),
+            Row(
+              children: [
+                Expanded(
+                  child: Text(
+                    label,
+                    style: TextStyle(
+                      fontSize: 18.sp,
+                      fontWeight: FontWeight.bold,
+                      color: Colors.grey[800],
+                    ),
+                  ),
+                ),
+                Icon(Icons.arrow_forward_ios_rounded,
+                    size: 16.sp, color: Colors.grey[800]),
+              ],
             ),
-            SizedBox(height: 10.h),
-            Image.asset(
-              imagePath,
-              width: 100.w,
-              height: 100.w,
-              fit: BoxFit.contain,
-            ),
-            SizedBox(height: 5.h),
-            Text(
-              'Learn more', //Learn more
-              style: TextStyle(
-                fontSize: 12.sp,
-                color: Colors.grey[600],
-                fontFamily: 'Pretendard',
+            const Spacer(),
+            Center(
+              child: Image.asset(
+                imagePath,
+                width: 100.w,
+                height: 100.w,
+                fit: BoxFit.contain,
               ),
             ),
+            SizedBox(height: 3.h),
           ],
         ),
       ),
@@ -193,61 +203,109 @@ class _UserScreenState extends State<UserScreen> {
   }
 
   Widget _buildFlowChart(List<EmotionFlowModel> flow) {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.r),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(205, 255, 255, 255),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '📈 Emotion Flow',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              height: 220.h,
-              width: double.infinity,
-              child: CustomPaint(
-                painter: EmotionFlowPainter(flow),
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Text(
+              'Weekly Mood',
+              style: TextStyle(
+                fontSize: 25.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 4.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Text(
+              'See how your feelings',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.grey[500],
+              ),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 220.h,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: EmotionFlowPainter(flow),
+            ),
+          ),
+        ],
       ),
     );
   }
 
   Widget _buildDistributionChart(EmotionDistributionModel distribution) {
-    return Card(
-      elevation: 4,
-      margin: EdgeInsets.zero,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10.r),
+    return Container(
+      decoration: BoxDecoration(
+        color: const Color.fromARGB(205, 255, 255, 255),
+        borderRadius: BorderRadius.circular(15.r),
+        border: Border.all(color: Colors.grey.withOpacity(0.2)),
+        boxShadow: [
+          BoxShadow(
+            color: Colors.black.withOpacity(0.08),
+            blurRadius: 8,
+            offset: const Offset(0, 4),
+          ),
+        ],
       ),
-      child: Padding(
-        padding: EdgeInsets.all(16.w),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              '📊 Emotion Distribution',
-              style: TextStyle(fontSize: 16.sp, fontWeight: FontWeight.bold),
-            ),
-            SizedBox(height: 12.h),
-            SizedBox(
-              height: 220.h,
-              width: double.infinity,
-              child: CustomPaint(
-                painter: EmotionDistributionPainter(distribution),
+      padding: EdgeInsets.symmetric(vertical: 16.h, horizontal: 20.w),
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Text(
+              'Monthly Overview',
+              style: TextStyle(
+                fontSize: 25.sp,
+                fontWeight: FontWeight.bold,
+                color: Colors.grey[800],
               ),
             ),
-          ],
-        ),
+          ),
+          SizedBox(height: 4.h),
+          Padding(
+            padding: EdgeInsets.symmetric(horizontal: 4.w),
+            child: Text(
+              'Hidden notes in your talks',
+              style: TextStyle(
+                fontSize: 20.sp,
+                fontWeight: FontWeight.w700,
+                color: Colors.grey[500],
+              ),
+            ),
+          ),
+          SizedBox(height: 12.h),
+          SizedBox(
+            height: 220.h,
+            width: double.infinity,
+            child: CustomPaint(
+              painter: EmotionDistributionPainter(distribution),
+            ),
+          ),
+        ],
       ),
     );
   }
