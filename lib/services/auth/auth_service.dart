@@ -35,7 +35,7 @@ class AuthService {
   /// 서버 로그아웃만 따로 (회원탈퇴 시에도 사용)
   static Future<void> logoutFromServer() async {
     await ApiClient.instance.post('/api/auth/logout', data: {
-      'fcmToken': 'mock-fcm-token', // TODO: 실제 토큰으로 교체
+      'fcm-token': 'mock-fcm-token', // TODO: 실제 토큰으로 교체
     });
   }
 }
