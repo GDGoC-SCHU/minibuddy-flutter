@@ -6,7 +6,8 @@ import 'package:minibuddy/blocs/profile/profile_bloc.dart';
 import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
 import 'package:minibuddy/data/profile/profile_repository.dart';
-import 'package:minibuddy/services/auth/auth_logout.dart';
+import 'package:minibuddy/services/auth/%08acount_service.dart';
+import 'package:minibuddy/services/auth/auth_service.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -198,7 +199,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                         ),
                       ),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () => AccountService.deleteUser(context),
                         child: Text(
                           'Delete Account',
                           style: TextStyle(

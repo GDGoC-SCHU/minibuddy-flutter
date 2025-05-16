@@ -5,25 +5,17 @@ import 'package:go_router/go_router.dart';
 import 'package:minibuddy/utils/api_client.dart';
 
 class AuthService {
+  /// Firebase 로그아웃 + 서버 로그아웃 처리
   static Future<void> logout(BuildContext context) async {
     try {
-      // Firebase Google 로그아웃
+      // Firebase 로그아웃
       await FirebaseAuth.instance.signOut();
 
-      final response = await ApiClient.instance.post('/api/auth/logout', data: {
-        'fcmToken': 'mock-fcm-token', // 추후 실제 FCM 토큰으로 교체
-      });
+      // 서버 로그아웃 요청
+      await logoutFromServer();
 
-      final result = response.data['result'];
-      final data = response.data['data'];
-
-      // ✅ 서버 응답 기준: resultCode == 200 && data == 'user deleted successfully'
-      if (result['resultCode'] == 200 && data == 'user deleted successfully') {
-        if (context.mounted) {
-          context.go('/');
-        }
-      } else {
-        throw Exception('Logout failed');
+      if (context.mounted) {
+        context.go('/');
       }
     } catch (e) {
       print('로그아웃 오류: $e');
@@ -38,5 +30,12 @@ class AuthService {
         );
       }
     }
+  }
+
+  /// 서버 로그아웃만 따로 (회원탈퇴 시에도 사용)
+  static Future<void> logoutFromServer() async {
+    await ApiClient.instance.post('/api/auth/logout', data: {
+      'fcmToken': 'mock-fcm-token', // TODO: 실제 토큰으로 교체
+    });
   }
 }
