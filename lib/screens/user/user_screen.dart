@@ -90,7 +90,7 @@ class _UserScreenState extends State<UserScreen> {
     EmotionDistributionModel distribution,
   ) {
     return SingleChildScrollView(
-      padding: EdgeInsets.all(16.w),
+      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
@@ -231,11 +231,11 @@ class _UserScreenState extends State<UserScreen> {
               ),
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 1.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: Text(
-              'See how your feelings',
+              'Check your emotional trends',
               style: TextStyle(
                 fontSize: 20.sp,
                 fontWeight: FontWeight.w700,
@@ -284,7 +284,7 @@ class _UserScreenState extends State<UserScreen> {
               ),
             ),
           ),
-          SizedBox(height: 4.h),
+          SizedBox(height: 1.h),
           Padding(
             padding: EdgeInsets.symmetric(horizontal: 4.w),
             child: Text(

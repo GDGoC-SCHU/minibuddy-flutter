@@ -150,7 +150,7 @@ class EmotionFlowPainter extends CustomPainter {
       );
     }
     final Paint zigzagPaint = Paint()
-      ..color = const Color.fromARGB(255, 255, 17, 0)
+      ..color = const Color.fromARGB(191, 255, 17, 0)
       ..strokeWidth = 4.w
       ..style = PaintingStyle.stroke;
     canvas.drawPath(zigzagPath, zigzagPaint);

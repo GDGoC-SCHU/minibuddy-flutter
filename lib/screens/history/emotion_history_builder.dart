@@ -30,7 +30,7 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
       context: context,
       fetch: () => _repository.getEmotionHistory(widget.type),
       onSuccess: (data) {
-        setState(() => _history = data);
+        setState(() => _history = data.reversed.toList());
       },
       retry: _fetchHistory,
     );
@@ -78,7 +78,7 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
               padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
               constraints: BoxConstraints(maxWidth: 0.75.sw),
               decoration: BoxDecoration(
-                color: const Color(0xFFF5F7FA),
+                color: const Color.fromARGB(255, 255, 255, 255),
                 borderRadius: const BorderRadius.only(
                   topLeft: Radius.circular(20),
                   topRight: Radius.circular(20),
