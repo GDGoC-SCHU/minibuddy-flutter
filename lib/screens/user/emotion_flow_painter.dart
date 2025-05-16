@@ -33,15 +33,15 @@ class EmotionFlowPainter extends CustomPainter {
 
     // 그래프 선 색상 정의
     final Paint depPaint = Paint()
-      ..color = const Color.fromARGB(255, 143, 172, 196)
+      ..color = const Color.fromARGB(2200, 51, 102, 204)
       ..strokeWidth = 3.w
       ..style = PaintingStyle.stroke;
     final Paint anxPaint = Paint()
-      ..color = const Color.fromARGB(255, 206, 136, 222)
+      ..color = const Color.fromARGB(200, 255, 153, 0)
       ..strokeWidth = 3.w
       ..style = PaintingStyle.stroke;
     final Paint strPaint = Paint()
-      ..color = const Color.fromARGB(255, 250, 210, 78)
+      ..color = const Color.fromARGB(200, 204, 0, 51)
       ..strokeWidth = 3.w
       ..style = PaintingStyle.stroke;
 
@@ -151,19 +151,24 @@ class EmotionFlowPainter extends CustomPainter {
       );
     }
     final Paint zigzagPaint = Paint()
-      ..color = Colors.red.withOpacity(1)
+      ..color = Colors.red
       ..strokeWidth = 4.w
       ..style = PaintingStyle.stroke;
     canvas.drawPath(zigzagPath, zigzagPaint);
 
     // ⬇ 4. 레전드
     final legends = [
-      {'label': 'DEP', 'color': const Color.fromARGB(255, 143, 172, 196)},
-      {'label': 'ANX', 'color': const Color.fromARGB(255, 206, 136, 222)},
-      {'label': 'STR', 'color': const Color.fromARGB(255, 250, 210, 78)},
+      {'label': 'DEP', 'color': const Color.fromARGB(200, 51, 102, 204)},
+      {'label': 'ANX', 'color': const Color.fromARGB(200, 255, 153, 0)},
+      {'label': 'STR', 'color': const Color.fromARGB(200, 204, 0, 51)},
     ];
 
-    final legendTextStyle = TextStyle(fontSize: 12.sp, color: Colors.black);
+    final legendTextStyle = TextStyle(
+        fontSize: 12,
+        color: Colors.black87,
+        fontFamily: 'pretendard',
+        fontWeight: FontWeight.w600);
+
     final double legendStartY =
         graphBox.top + graphBox.height / 2 - legends.length * 10.h;
 
