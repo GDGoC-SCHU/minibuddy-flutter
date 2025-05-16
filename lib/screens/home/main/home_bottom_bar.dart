@@ -47,7 +47,7 @@ class HomeBottomBar extends StatelessWidget {
                   child: Text(
                     'MYPAGE',
                     style: const TextStyle(
-                      fontSize: 25,
+                      fontSize: 24,
                       fontFamily: 'Calsans',
                       //fontWeight: FontWeight.w700,
                       color: Color.fromARGB(255, 120, 95, 60),
@@ -65,7 +65,7 @@ class HomeBottomBar extends StatelessWidget {
                   child: Text(
                     'STATUS',
                     style: const TextStyle(
-                      fontSize: 25,
+                      fontSize: 24,
                       fontFamily: 'Calsans',
                       //fontWeight: FontWeight.w700,
                       color: Color.fromARGB(255, 120, 95, 60),
