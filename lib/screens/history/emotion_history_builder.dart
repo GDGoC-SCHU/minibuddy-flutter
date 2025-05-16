@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minibuddy/data/history/history_api.dart';
 import 'package:minibuddy/data/history/history_repository.dart';
 import 'package:minibuddy/models/history_models.dart';
@@ -41,18 +42,15 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
       return Center(
         child: Column(
           mainAxisSize: MainAxisSize.min,
-          children: const [
-            Text(
-              '🕊️',
-              style: TextStyle(fontSize: 70),
-            ),
-            SizedBox(height: 2),
+          children: [
+            Text('🕊️', style: TextStyle(fontSize: 70.sp)),
+            SizedBox(height: 4.h),
             Text(
               "No records yet\nand that's perfectly okay.",
               textAlign: TextAlign.center,
               style: TextStyle(
-                fontSize: 14,
-                color: Color.fromARGB(255, 85, 85, 85),
+                fontSize: 14.sp,
+                color: const Color(0xFF555555),
                 height: 1.5,
                 fontFamily: 'Pretendard',
                 fontWeight: FontWeight.bold,
@@ -65,9 +63,9 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
 
     return SafeArea(
       top: true,
-      bottom: false, // 👈 홈 인디케이터 영역 침범 허용
+      bottom: false,
       child: ListView.builder(
-        padding: const EdgeInsets.fromLTRB(16, 0, 16, 30), // 하단 여유 공간
+        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 30.h),
         itemCount: _history.length,
         physics: const BouncingScrollPhysics(),
         itemBuilder: (_, index) {
@@ -76,11 +74,9 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
           return Align(
             alignment: Alignment.centerRight,
             child: Container(
-              margin: const EdgeInsets.symmetric(vertical: 6),
-              padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-              constraints: BoxConstraints(
-                maxWidth: MediaQuery.of(context).size.width * 0.75,
-              ),
+              margin: EdgeInsets.symmetric(vertical: 6.h),
+              padding: EdgeInsets.symmetric(horizontal: 18.w, vertical: 14.h),
+              constraints: BoxConstraints(maxWidth: 0.75.sw),
               decoration: BoxDecoration(
                 color: const Color(0xFFF5F7FA),
                 borderRadius: const BorderRadius.only(
@@ -102,20 +98,21 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
                 children: [
                   Text(
                     item.message,
-                    style: const TextStyle(
-                      fontSize: 15,
+                    style: TextStyle(
+                      fontSize: 15.sp,
                       fontWeight: FontWeight.w600,
                       fontFamily: 'Pretendard',
-                      color: Color(0xFF333333),
+                      color: const Color(0xFF333333),
                     ),
                   ),
-                  const SizedBox(height: 8),
+                  SizedBox(height: 8.h),
                   Text(
                     item.date,
-                    style: const TextStyle(
-                      fontSize: 12,
-                      color: Color.fromARGB(255, 102, 102, 102),
+                    style: TextStyle(
+                      fontSize: 12.sp,
                       fontStyle: FontStyle.italic,
+                      fontFamily: 'Pretendard',
+                      color: const Color.fromARGB(255, 102, 102, 102),
                     ),
                   ),
                 ],
