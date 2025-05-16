@@ -243,9 +243,8 @@ class _UserScreenState extends State<UserScreen> {
               ),
             ),
           ),
-          SizedBox(height: 12.h),
           SizedBox(
-            height: 220.h,
+            height: 200.h,
             width: double.infinity,
             child: CustomPaint(
               painter: EmotionFlowPainter(flow),
@@ -299,7 +298,7 @@ class _UserScreenState extends State<UserScreen> {
           ),
           SizedBox(height: 12.h),
           SizedBox(
-            height: 220.h,
+            height: 200.h,
             width: double.infinity,
             child: CustomPaint(
               painter: EmotionDistributionPainter(distribution),

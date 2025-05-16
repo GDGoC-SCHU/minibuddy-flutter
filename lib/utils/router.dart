@@ -77,12 +77,12 @@ final GoRouter router = GoRouter(
     // User
     GoRoute(
       path: '/user',
-      builder: (context, state) => const UserScreen(), // BlocProvider 제거됨
+      builder: (context, state) => const UserScreen(),
     ),
 
     GoRoute(
       path: '/user/anxiety',
-      builder: (context, state) => const AnxietyDetailScreen(), // 그냥 화면만 넘김
+      builder: (context, state) => const AnxietyDetailScreen(),
     ),
     GoRoute(
         path: '/user/depression',
