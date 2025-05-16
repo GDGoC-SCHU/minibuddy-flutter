@@ -10,7 +10,7 @@ plugins {
 
 android {
     namespace = "com.y.minibuddy"
-    compileSdk = flutter.compileSdkVersion
+    compileSdkVersion 35
     ndkVersion = flutter.ndkVersion
 
     compileOptions {
@@ -19,7 +19,7 @@ android {
     }
 
     kotlinOptions {
-        jvmTarget = JavaVersion.VERSION_1_8
+        jvmTarget = '1.8'
     }
 
     defaultConfig {
@@ -27,21 +27,34 @@ android {
         applicationId = "com.y.minibuddy"
         // You can update the following values to match your application needs.
         // For more information, see: https://flutter.dev/to/review-gradle-config.
-        minSdk = flutter.minSdkVersion
-        targetSdk = flutter.targetSdkVersion
+        minSdkVersion 21
+        targetSdkVersion 35
         versionCode = flutter.versionCode
         versionName = flutter.versionName
     }
 
-    buildTypes {
-        release {
-            // TODO: Add your own signing config for the release build.
-            // Signing with the debug keys for now, so `flutter run --release` works.
-            signingConfig = signingConfigs.debug
-        }
-    }
+//    signingConfigs {
+//        release {
+//            storeFile file('../keystore/key.jks')
+//            storePassword file('../keystore/keystore.password').text.trim()
+//            keyPassword file('../keystore/keystore.password').text.trim()
+//            keyAlias 'key'
+//        }
+//    }
+//
+//    buildTypes {
+//        release {
+//            signingConfig signingConfigs.release
+//        }
+//    }
 }
 
 flutter {
     source = "../.."
+}
+
+dependencies {
+    implementation "androidx.annotation:annotation:1.7.0"
+    implementation "androidx.core:core:1.12.0"
+    implementation "androidx.media:media:1.6.0"
 }
