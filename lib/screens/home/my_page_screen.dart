@@ -6,6 +6,7 @@ import 'package:minibuddy/blocs/profile/profile_bloc.dart';
 import 'package:minibuddy/blocs/profile/profile_event.dart';
 import 'package:minibuddy/blocs/profile/profile_state.dart';
 import 'package:minibuddy/data/profile/profile_repository.dart';
+import 'package:minibuddy/services/auth/auth_logout.dart';
 
 class MyPageScreen extends StatefulWidget {
   const MyPageScreen({super.key});
@@ -186,7 +187,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                     children: [
                       SizedBox(height: 10.h),
                       TextButton(
-                        onPressed: () {},
+                        onPressed: () => AuthService.logout(context),
                         child: Text(
                           'Log out',
                           style: TextStyle(

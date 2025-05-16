@@ -15,7 +15,7 @@ class InitialScreen extends StatelessWidget {
       context.go('/home');
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('로그인에 실패했습니다')),
+        const SnackBar(content: Text('Failed to log in. Please try again.')),
       );
     }
   }

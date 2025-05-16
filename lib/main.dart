@@ -58,6 +58,14 @@ class MinibuddyApp extends StatelessWidget {
             primary: Colors.grey[800], // 포커스 및 인터랙션 색
             surfaceTint: Colors.transparent,
           ),
+          snackBarTheme: SnackBarThemeData(
+            backgroundColor: Colors.grey[400],
+            contentTextStyle: TextStyle(
+                color: const Color.fromARGB(255, 255, 255, 255),
+                fontFamily: 'Pretendard',
+                fontSize: 15,
+                fontWeight: FontWeight.w700),
+          ),
         ),
         routerConfig: router,
       ),
