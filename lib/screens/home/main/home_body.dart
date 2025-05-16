@@ -39,14 +39,17 @@ class HomeBody extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.center,
                 children: [
                   serverResponse.isNotEmpty
-                      ? Text(
-                          serverResponse,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                            fontSize: 18.sp,
-                            color: const Color.fromARGB(255, 116, 116, 116),
-                            fontWeight: FontWeight.w600,
-                            fontFamily: 'Pretendard',
+                      ? ConstrainedBox(
+                          constraints: BoxConstraints(maxWidth: 280.w),
+                          child: Text(
+                            serverResponse,
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 18.sp,
+                              color: const Color.fromARGB(255, 116, 116, 116),
+                              fontWeight: FontWeight.w600,
+                              fontFamily: 'Pretendard',
+                            ),
                           ),
                         )
                       : recognizedText.isEmpty // STT 중이면 안 보이게

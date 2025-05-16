@@ -1,36 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:google_sign_in/google_sign_in.dart';
+import 'package:minibuddy/services/auth/firebase_auth_provider.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
-    try {
-      final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return;
+    final (status, user) = await FirebaseAuthProvider().loginWithGoogle();
 
-      final googleAuth = await googleUser.authentication;
-
-      final credential = GoogleAuthProvider.credential(
-        accessToken: googleAuth.accessToken,
-        idToken: googleAuth.idToken,
-      );
-
-      final userCredential =
-          await FirebaseAuth.instance.signInWithCredential(credential);
-
-      final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
-
-      if (isNewUser) {
-        context.go('/onboarding/nickname');
-      } else {
-        context.go('/home');
-      }
-    } catch (e) {
-      print('로그인 실패: $e');
+    if (status == AuthStatus.registerSuccess) {
+      context.go('/onboarding/nickname');
+    } else if (status == AuthStatus.loginSuccess) {
+      context.go('/home');
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('로그인에 실패했습니다')),
       );

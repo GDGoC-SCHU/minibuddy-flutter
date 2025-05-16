@@ -22,8 +22,7 @@ class HomeBottomBar extends StatelessWidget {
       elevation: 8,
       child: Container(
         height: 55,
-        margin: const EdgeInsets.symmetric(
-            horizontal: 16, vertical: 12), // 좌우 마진 줄임
+        margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 6),
         padding: const EdgeInsets.symmetric(horizontal: 24),
         decoration: BoxDecoration(
           color: const Color.fromARGB(255, 255, 255, 255),
