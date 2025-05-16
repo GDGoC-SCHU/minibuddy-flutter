@@ -92,7 +92,7 @@ class _UserScreenState extends State<UserScreen> {
     EmotionDistributionModel distribution,
   ) {
     return SingleChildScrollView(
-      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 0),
+      padding: EdgeInsets.fromLTRB(16.w, 16.h, 16.w, 32),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

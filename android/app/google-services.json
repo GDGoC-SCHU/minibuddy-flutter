@@ -1,0 +1,46 @@
+{
+  "project_info": {
+    "project_number": "1011133607958",
+    "project_id": "minibuddy-456409",
+    "storage_bucket": "minibuddy-456409.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:1011133607958:android:6caaa5f3530be873ab8537",
+        "android_client_info": {
+          "package_name": "com.y.minibuddy"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "1011133607958-oo2irfd8nteiqgork2uda9f83qvuof22.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDkm6QCW5slOr63gKP2bg3UY-uEHC9CAs0"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "1011133607958-oo2irfd8nteiqgork2uda9f83qvuof22.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "1011133607958-2bcbtas1qv510qpqmg2lo8639tosagts.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.y.minibuddy"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

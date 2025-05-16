@@ -1,4 +1,5 @@
 class OnboardingState {
+  String uid = '';
   String nickname = '';
   String birthdate = '';
   List<String> keywords = [];

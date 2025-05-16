@@ -8,7 +8,7 @@ class OnboardingRepository {
     final state = OnboardingState();
 
     final payload = {
-      "uid": "mock-firebase-id-token", // 추후 Firebase에서 대체
+      "uid": state.uid,
       "nickname": state.nickname,
       "birthdate": state.birthdate,
       "keywords": state.keywords,

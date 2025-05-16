@@ -60,5 +60,20 @@
 	  <true/>
 	</dict>
 	<!--여기까지 -->
+
+	<key>GIDClientID</key>
+	<string>1011133607958-2bcbtas1qv510qpqmg2lo8639tosagts.apps.googleusercontent.com</string>
+
+	<key>CFBundleURLTypes</key>
+<array>
+    <dict>
+        <key>CFBundleTypeRole</key>
+        <string>Editor</string>
+        <key>CFBundleURLSchemes</key>
+        <array>
+            <string>com.googleusercontent.apps.1011133607958-2bcbtas1qv510qpqmg2lo8639tosagts</string>
+        </array>
+    </dict>
+</array>
 </dict>
 </plist>
