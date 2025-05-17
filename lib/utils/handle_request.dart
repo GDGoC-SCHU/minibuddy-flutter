@@ -98,6 +98,11 @@ ErrorType _mapErrorTypeFromDio(DioException e) {
   final statusCode = e.response?.statusCode;
 
   if (statusCode == 400) return ErrorType.badRequest;
+  if (statusCode == 401) return ErrorType.unauthorized;
+  if (statusCode == 403) return ErrorType.forbidden;
+  if (statusCode == 404) return ErrorType.notFound;
+  if (statusCode == 409) return ErrorType.conflict;
+  if (statusCode == 422) return ErrorType.validationError;
   if (statusCode == 500) return ErrorType.serverError;
 
   if (e.type == DioExceptionType.connectionTimeout ||

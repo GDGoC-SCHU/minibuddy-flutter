@@ -12,7 +12,7 @@ class OnboardingRepository {
       "nickname": state.nickname,
       "birthdate": state.birthdate,
       "keywords": state.keywords,
-      "fcm-token": "mock-fcm-token",
+      "fcm-token": "mockfcmtoken",
     };
 
     final response = await _api.signup(payload);
