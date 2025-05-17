@@ -25,18 +25,9 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
     _fetchHistory();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      if (ModalRoute.of(context)?.isCurrent == true && _isLoading) {
-        setState(() => _isLoading = false);
-      }
-    });
-  }
-
   void _fetchHistory() {
     setState(() => _isLoading = true);
+
     handleRequest<List<MemoryHistory>>(
       context: context,
       fetch: () => _repository.getMemoryHistory(),
@@ -46,10 +37,10 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
           _isLoading = false;
         });
       },
-      retry: () {
-        setState(() => _isLoading = false);
-        _fetchHistory();
+      onError: (_) {
+        setState(() => _isLoading = false); // 에러 발생 시에도 로딩 종료
       },
+      retry: _fetchHistory,
     );
   }
 

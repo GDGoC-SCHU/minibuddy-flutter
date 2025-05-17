@@ -81,9 +81,7 @@ final GoRouter router = GoRouter(
     ),
 
     GoRoute(
-      path: '/user/anxiety',
-      builder: (context, state) => const AnxietyDetailScreen(),
-    ),
+        path: '/user/anxiety', builder: (_, __) => const AnxietyDetailScreen()),
     GoRoute(
         path: '/user/depression',
         builder: (_, __) => const DepressionDetailScreen()),

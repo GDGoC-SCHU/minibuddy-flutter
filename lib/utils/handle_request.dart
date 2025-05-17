@@ -10,6 +10,7 @@ Future<void> handleRequest<T>({
   required void Function(T data) onSuccess,
   required VoidCallback retry,
   Widget? backScreen,
+  void Function(Object error)? onError,
 }) async {
   final stopwatch = Stopwatch()..start();
   bool showLoading = false;
@@ -43,8 +44,12 @@ Future<void> handleRequest<T>({
     stopwatch.stop();
     if (context.mounted) {
       if (showLoading) Navigator.of(context).pop();
-      final errorType = _mapErrorTypeFromDio(e);
-      _goToError(context, errorType, retry, backScreen);
+      if (onError != null) {
+        onError(e); // 사용자 정의 에러 처리
+      } else {
+        final errorType = _mapErrorTypeFromDio(e);
+        _goToError(context, errorType, retry, backScreen);
+      }
     }
   } catch (e, stackTrace) {
     stopwatch.stop();
@@ -52,7 +57,12 @@ Future<void> handleRequest<T>({
       if (showLoading) Navigator.of(context).pop();
       debugPrint('❌ Unknown error: $e');
       debugPrint('📍 Stacktrace: $stackTrace');
-      _goToError(context, ErrorType.unknown, retry, backScreen);
+
+      if (onError != null) {
+        onError(e); // 사용자 정의 에러 처리
+      } else {
+        _goToError(context, ErrorType.unknown, retry, backScreen);
+      }
     }
   }
 }

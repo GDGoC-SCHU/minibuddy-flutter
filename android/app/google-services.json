@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "1011133607958-h742s81ckjglsknhnkrc45j20q3cdcd9.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.y.minibuddy",
+            "certificate_hash": "4f5fef0633fb8f882ccfe67f22a84bc0c42113c4"
+          }
+        },
+        {
           "client_id": "1011133607958-oo2irfd8nteiqgork2uda9f83qvuof22.apps.googleusercontent.com",
           "client_type": 3
         }

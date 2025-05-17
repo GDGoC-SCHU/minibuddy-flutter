@@ -9,7 +9,7 @@ Future<void> main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
-  print('✅ Firebase Initialized!');
+  print('Firebase Initialized!');
 
   runApp(const MinibuddyApp());
 }

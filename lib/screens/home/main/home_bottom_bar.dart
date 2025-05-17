@@ -47,8 +47,8 @@ class HomeBottomBar extends StatelessWidget {
                     'MYPAGE',
                     style: const TextStyle(
                       fontSize: 24,
-                      fontFamily: 'Calsans',
-                      //fontWeight: FontWeight.w700,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
                       color: Color.fromARGB(255, 120, 95, 60),
                     ),
                   ),
@@ -65,8 +65,8 @@ class HomeBottomBar extends StatelessWidget {
                     'STATUS',
                     style: const TextStyle(
                       fontSize: 24,
-                      fontFamily: 'Calsans',
-                      //fontWeight: FontWeight.w700,
+                      fontFamily: 'Pretendard',
+                      fontWeight: FontWeight.w700,
                       color: Color.fromARGB(255, 120, 95, 60),
                     ),
                   ),
@@ -79,4 +79,3 @@ class HomeBottomBar extends StatelessWidget {
     );
   }
 }
-// Dynapuff, Poetsenone, Calsans, HakgyoansimDunggeunmiso, Pretendard

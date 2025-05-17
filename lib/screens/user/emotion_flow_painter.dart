@@ -14,7 +14,7 @@ class EmotionFlowPainter extends CustomPainter {
     final padding = 12.w;
     final legendWidth = 50.w;
 
-    // 🔧 회색 박스 높이를 살짝 줄여 날짜 영역 확보
+    // 회색 박스 높이를 살짝 줄여 날짜 영역 확보
     final graphBox = Rect.fromLTWH(
       0,
       padding,
@@ -82,7 +82,7 @@ class EmotionFlowPainter extends CustomPainter {
 
       // 날짜 텍스트
       final date = DateTime.parse(data.date);
-      final label = DateFormat('MM/dd').format(date);
+      final label = DateFormat('M/d').format(date);
       final labelSpan = TextSpan(
         text: label,
         style: TextStyle(
@@ -160,6 +160,7 @@ class EmotionFlowPainter extends CustomPainter {
       {'label': 'DEP', 'color': const Color.fromARGB(200, 51, 102, 204)},
       {'label': 'ANX', 'color': const Color.fromARGB(200, 255, 153, 0)},
       {'label': 'STR', 'color': const Color.fromARGB(200, 204, 0, 51)},
+      {'label': 'RISK', 'type': 'zigzag'}, // 경고선 추가
     ];
 
     final legendTextStyle = TextStyle(
@@ -175,8 +176,29 @@ class EmotionFlowPainter extends CustomPainter {
       final legend = legends[i];
       final y = legendStartY + i * 20.h;
 
-      final paint = Paint()..color = legend['color'] as Color;
-      canvas.drawRect(Rect.fromLTWH(size.width - 50.w, y, 10.w, 10.w), paint);
+      if (legend.containsKey('type') && legend['type'] == 'zigzag') {
+        // 지그재그 선 그리기
+        final zigzagLegendPath = Path()..moveTo(size.width - 50.w, y + 5.h);
+        const double height = 3;
+        const double spacing = 6;
+        for (double x = 0; x <= 12; x += spacing) {
+          final isUp = (x ~/ spacing) % 2 == 0;
+          zigzagLegendPath.lineTo(
+            size.width - 50.w + x,
+            y + 5.h + (isUp ? -height : height),
+          );
+        }
+
+        final Paint zigzagLegendPaint = Paint()
+          ..color = const Color.fromARGB(191, 255, 17, 0)
+          ..strokeWidth = 2
+          ..style = PaintingStyle.stroke;
+
+        canvas.drawPath(zigzagLegendPath, zigzagLegendPaint);
+      } else {
+        final paint = Paint()..color = legend['color'] as Color;
+        canvas.drawRect(Rect.fromLTWH(size.width - 50.w, y, 10.w, 10.w), paint);
+      }
 
       final textSpan = TextSpan(
         text: legend['label'] as String,

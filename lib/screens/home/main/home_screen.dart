@@ -219,7 +219,7 @@ class _HomeScreenState extends State<HomeScreen> {
               Align(
                 alignment: Alignment.bottomCenter,
                 child: Transform.translate(
-                  offset: Offset(0, -35.h),
+                  offset: Offset(0, -30.h),
                   child: Container(
                     width: 80.w,
                     height: 80.w,
@@ -258,7 +258,7 @@ class _HomeScreenState extends State<HomeScreen> {
           floatingActionButtonLocation:
               FloatingActionButtonLocation.centerDocked,
           bottomNavigationBar: SizedBox(
-            height: 0.15.sh,
+            height: 0.13.sh,
             child: HomeBottomBar(
               isListening: isListening,
               isTtsPlaying: isTtsPlaying,
