@@ -22,60 +22,76 @@ class WelcomeScreen extends StatelessWidget {
           SafeArea(
             child: Padding(
               padding: EdgeInsets.all(24.w),
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  // 토끼 이미지
-                  Image.asset(
-                    'assets/images/bunny.png',
-                    width: 250.w,
-                    height: 250.w,
-                    fit: BoxFit.contain,
+              child: SingleChildScrollView(
+                // 화면 넘침 방지
+                child: ConstrainedBox(
+                  constraints: BoxConstraints(
+                    minHeight: MediaQuery.of(context).size.height - 48.h,
                   ),
-                  SizedBox(height: 60.h),
-                  Text(
-                    'Welcome to MiniBuddy!',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 30.sp,
-                      fontWeight: FontWeight.w900,
-                      fontFamily: 'Pretendard',
-                      color: Colors.grey[900],
-                    ),
-                  ),
-                  SizedBox(height: 12.h),
-                  Text(
-                    'We appreciate you sharing your info. You’re now ready for meaningful, personalized chats. Tap the mic whenever you’re ready to start.',
-                    textAlign: TextAlign.center,
-                    style: TextStyle(
-                      fontSize: 15.sp,
-                      fontWeight: FontWeight.w500,
-                      fontFamily: 'Pretendard',
-                      color: const Color.fromARGB(255, 111, 110, 110),
-                      height: 1.5,
-                    ),
-                  ),
-                  SizedBox(height: 40.h),
-                  SizedBox(
-                    width: double.infinity,
-                    height: 48.h,
-                    child: ElevatedButton(
-                      onPressed: () {
-                        context.go('/home');
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: Colors.grey[800],
-                        foregroundColor: Colors.white,
-                        textStyle: TextStyle(
-                          fontSize: 16.sp,
-                          fontWeight: FontWeight.w500,
-                          fontFamily: 'Pretendard',
+                  child: IntrinsicHeight(
+                    child: Column(
+                      children: [
+                        const Spacer(), // 위 여백 조절
+                        Image.asset(
+                          'assets/images/bunny.png',
+                          width: 250.w,
+                          height: 250.w,
+                          fit: BoxFit.contain,
                         ),
-                      ),
-                      child: const Text('Start'),
+                        SizedBox(height: 60.h),
+                        Flexible(
+                          child: Text(
+                            'Welcome!',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 50.sp,
+                              fontWeight: FontWeight.w900,
+                              fontFamily: 'Pretendard',
+                              color: const Color.fromARGB(255, 59, 59, 59),
+                            ),
+                            maxLines: 1,
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        SizedBox(height: 5.h),
+                        Flexible(
+                          child: Text(
+                            'We appreciate you sharing your info.\nYou’re now ready for personalized chats.\nTap the mic whenever you’re ready to start.',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                              fontSize: 13.sp,
+                              fontWeight: FontWeight.w500,
+                              fontFamily: 'Pretendard',
+                              color: const Color.fromARGB(255, 111, 110, 110),
+                              height: 1.5,
+                            ),
+                          ),
+                        ),
+                        SizedBox(height: 40.h),
+                        SizedBox(
+                          width: double.infinity,
+                          height: 48.h,
+                          child: ElevatedButton(
+                            onPressed: () {
+                              context.go('/home');
+                            },
+                            style: ElevatedButton.styleFrom(
+                              backgroundColor: Colors.grey[800],
+                              foregroundColor: Colors.white,
+                              textStyle: TextStyle(
+                                fontSize: 16.sp,
+                                fontWeight: FontWeight.w500,
+                                fontFamily: 'Pretendard',
+                              ),
+                            ),
+                            child: const Text('Start'),
+                          ),
+                        ),
+                        const Spacer(), // 아래 여백 조절
+                      ],
                     ),
                   ),
-                ],
+                ),
               ),
             ),
           ),
