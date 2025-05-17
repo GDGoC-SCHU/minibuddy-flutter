@@ -20,8 +20,6 @@
         "lib/firebase_options.dart": {
           "projectId": "minibuddy-456409",
           "configurations": {
-            "android": "1:1011133607958:android:6caaa5f3530be873ab8537",
-            "ios": "1:1011133607958:ios:9cbe8698f6b50316ab8537",
             "web": "1:1011133607958:web:04659c54442c4ac8ab8537"
           }
         }
@@ -34,12 +32,6 @@
       "firebase.json",
       "**/.*",
       "**/node_modules/**"
-    ],
-    "rewrites": [
-      {
-        "source": "**",
-        "destination": "/index.html"
-      }
     ]
   }
 }

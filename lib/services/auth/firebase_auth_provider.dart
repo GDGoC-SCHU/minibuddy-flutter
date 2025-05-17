@@ -24,26 +24,38 @@ class FirebaseAuthProvider {
       );
 
       final userCredential = await _auth.signInWithCredential(credential);
-      final user = userCredential.user;
+      User? user = userCredential.user;
+
+      // Firebase Web에서 로그인 복구가 지연될 수 있으므로 명시적으로 기다림
+      if (user == null || user.uid.isEmpty) {
+        print('UID 복구 대기 중...');
+        user = await _auth.authStateChanges().firstWhere((u) => u != null);
+        print('UID 복구 완료: ${user!.uid}');
+      }
+
       final isNewUser = userCredential.additionalUserInfo?.isNewUser ?? false;
+      OnboardingState().uid = user!.uid;
 
       if (user != null) {
         OnboardingState().uid = user.uid;
 
         if (!isNewUser) {
-          final tokenToSend = fcmToken ?? 'mock-fcm-token'; // fallback 사용
-          final response =
-              await ApiClient.instance.post('/api/user/fcm-update', data: {
-            'fcm-token': tokenToSend,
-          });
+          final tokenToSend = fcmToken ?? 'mock-fcm-token';
+          final response = await ApiClient.instance.post(
+            '/api/user/fcm-update',
+            data: {'fcm-token': tokenToSend},
+          );
           print('FCM 업데이트 응답: ${response.data}');
         }
-      }
 
-      return (
-        isNewUser ? AuthStatus.registerSuccess : AuthStatus.loginSuccess,
-        user
-      );
+        return (
+          isNewUser ? AuthStatus.registerSuccess : AuthStatus.loginSuccess,
+          user
+        );
+      } else {
+        print('user가 null입니다. 로그인 실패로 처리합니다.');
+        return (AuthStatus.loginFailed, null);
+      }
     } catch (e) {
       print('구글 로그인 오류: $e');
       return (AuthStatus.loginFailed, null);
