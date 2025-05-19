@@ -59,7 +59,7 @@ class _EmotionHistoryBuilderState extends State<EmotionHistoryBuilder> {
             Text('🕊️', style: TextStyle(fontSize: 70.sp)),
             SizedBox(height: 4.h),
             Text(
-              "No records yet\nand that's perfectly okay.",
+              "No records yet\nand that's totally fine.",
               textAlign: TextAlign.center,
               style: TextStyle(
                 fontSize: 14.sp,

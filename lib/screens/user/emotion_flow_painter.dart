@@ -31,6 +31,29 @@ class EmotionFlowPainter extends CustomPainter {
       boxPaint,
     );
 
+    // 데이터 없음 안내 문구
+    final textPainter = TextPainter(
+      text: TextSpan(
+        text: 'No records from the past 7 days.',
+        style: TextStyle(
+          fontSize: 14.sp,
+          height: 1.6,
+          fontWeight: FontWeight.w600,
+          fontFamily: 'Pretendard',
+          color: Colors.grey[700],
+        ),
+      ),
+      textAlign: TextAlign.center,
+      textDirection: ui.TextDirection.ltr,
+    )..layout(maxWidth: graphBox.width - 32.w);
+
+    final offset = Offset(
+      graphBox.left + (graphBox.width - textPainter.width) / 2,
+      graphBox.top + (graphBox.height - textPainter.height) / 2,
+    );
+
+    textPainter.paint(canvas, offset);
+
     // 그래프 선 색상 정의
     final Paint depPaint = Paint()
       ..color = const Color.fromARGB(2200, 51, 102, 204)
@@ -138,22 +161,24 @@ class EmotionFlowPainter extends CustomPainter {
     }
 
     // ⬇ 3. 지그재그 경고선
-    final warningY = graphTop + (30 - 21) * (graphHeight / 30);
-    final zigzagPath = Path()..moveTo(graphBox.left, warningY);
-    const double zigzagHeight = 6;
-    const double zigzagSpacing = 10;
-    for (double x = graphBox.left; x < graphBox.right; x += zigzagSpacing) {
-      zigzagPath.lineTo(
-        x,
-        warningY +
-            (x ~/ zigzagSpacing % 2 == 0 ? -zigzagHeight : zigzagHeight).h,
-      );
+    if (flow.isNotEmpty) {
+      final warningY = graphTop + (30 - 21) * (graphHeight / 30);
+      final zigzagPath = Path()..moveTo(graphBox.left, warningY);
+      const double zigzagHeight = 6;
+      const double zigzagSpacing = 10;
+      for (double x = graphBox.left; x < graphBox.right; x += zigzagSpacing) {
+        zigzagPath.lineTo(
+          x,
+          warningY +
+              (x ~/ zigzagSpacing % 2 == 0 ? -zigzagHeight : zigzagHeight).h,
+        );
+      }
+      final Paint zigzagPaint = Paint()
+        ..color = const Color.fromARGB(191, 255, 17, 0)
+        ..strokeWidth = 4.w
+        ..style = PaintingStyle.stroke;
+      canvas.drawPath(zigzagPath, zigzagPaint);
     }
-    final Paint zigzagPaint = Paint()
-      ..color = const Color.fromARGB(191, 255, 17, 0)
-      ..strokeWidth = 4.w
-      ..style = PaintingStyle.stroke;
-    canvas.drawPath(zigzagPath, zigzagPaint);
 
     // ⬇ 4. 레전드
     final legends = [

@@ -9,25 +9,52 @@ class EmotionDistributionPainter extends CustomPainter {
 
   @override
   void paint(Canvas canvas, Size size) {
-    const double gapAngle = 0.5; // 각도 간격 살짝만
+    const double gapAngle = 0.5;
     final center = Offset(size.width / 2, size.height / 2.4);
-    final radius = size.width * 0.26; // 크기 더 줄임
+    final radius = size.width * 0.26;
 
-    // 파스텔 색상 정의
     final paints = {
-      'normal': Paint()
-        ..color = const Color.fromARGB(149, 207, 234, 227), // 파스텔 민트 (차분한 느낌)
-      'dep': Paint()..color = const Color.fromARGB(200, 51, 102, 204), // 쨍한 파란색
-      'anx': Paint()..color = const Color.fromARGB(200, 255, 153, 0), // 쨍한 오렌지
-      'str': Paint()..color = const Color.fromARGB(200, 204, 0, 51), // 쨍한 레드
+      'normal': Paint()..color = const Color.fromARGB(149, 207, 234, 227),
+      'dep': Paint()..color = const Color.fromARGB(200, 51, 102, 204),
+      'anx': Paint()..color = const Color.fromARGB(200, 255, 153, 0),
+      'str': Paint()..color = const Color.fromARGB(200, 204, 0, 51),
     };
 
-    // 데이터 합산 (0 나눗셈 방지)
-    final total = (distribution.normal +
-            distribution.dep +
-            distribution.anx +
-            distribution.str)
-        .clamp(1, double.maxFinite.toInt());
+    // 수정된 total 계산
+    final total = distribution.normal +
+        distribution.dep +
+        distribution.anx +
+        distribution.str;
+
+    if (total == 0) {
+      // ⬇ 배경 원자국 먼저 그림
+      canvas.drawCircle(
+        center,
+        radius + 4,
+        Paint()
+          ..color = const Color.fromARGB(255, 51, 51, 51).withOpacity(0.05)
+          ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
+      );
+
+      // ⬇ ❓ 텍스트 그리기
+      final tp = TextPainter(
+        text: const TextSpan(
+          text: '❓',
+          style: TextStyle(
+            fontSize: 64,
+            color: Colors.red,
+            fontWeight: FontWeight.bold,
+          ),
+        ),
+        textDirection: TextDirection.ltr,
+      )..layout();
+
+      tp.paint(
+        canvas,
+        Offset(center.dx - tp.width / 2, center.dy - tp.height / 2),
+      );
+      return;
+    }
 
     final ratios = {
       'normal': distribution.normal / total,
@@ -53,7 +80,6 @@ class EmotionDistributionPainter extends CustomPainter {
       }
     }
 
-    // 흰색 테두리
     canvas.drawCircle(
       center,
       radius,
@@ -63,7 +89,6 @@ class EmotionDistributionPainter extends CustomPainter {
         ..style = PaintingStyle.stroke,
     );
 
-    // ▼ 레전드 (하단 가운데 정렬)
     final legendItems = {
       'normal': 'GOOD',
       'dep': 'DEP',
@@ -73,31 +98,29 @@ class EmotionDistributionPainter extends CustomPainter {
 
     const double spacing = 16;
     const double circleSize = 10;
-    final double totalWidth =
-        legendItems.length * (circleSize + spacing + 35); // 추정 텍스트 폭 포함
+    final double totalWidth = legendItems.length * (circleSize + spacing + 35);
     double dx = (size.width - totalWidth) / 2;
 
     final textStyle = TextStyle(
-        fontSize: 12,
-        color: Colors.black87,
-        fontFamily: 'pretendard',
-        fontWeight: FontWeight.w600);
+      fontSize: 12,
+      color: Colors.black87,
+      fontFamily: 'pretendard',
+      fontWeight: FontWeight.w600,
+    );
 
     canvas.drawCircle(
       center,
-      radius + 4, // 살짝 더 크게
+      radius + 4,
       Paint()
         ..color = const Color.fromARGB(255, 51, 51, 51).withOpacity(0.05)
         ..maskFilter = const MaskFilter.blur(BlurStyle.normal, 4),
     );
 
     for (final entry in legendItems.entries) {
-      // 원
       final paint = paints[entry.key]!;
       final offset = Offset(dx, size.height - 11);
       canvas.drawCircle(offset, circleSize / 2, paint);
 
-      // 텍스트
       final tp = TextPainter(
         text: TextSpan(text: entry.value, style: textStyle),
         textDirection: TextDirection.ltr,

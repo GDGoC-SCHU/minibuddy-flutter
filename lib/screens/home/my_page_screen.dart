@@ -37,7 +37,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
 
     if (result != null) {
       if (field == 'nickname' && result is String) {
-        _bloc.add(UpdateProfile(name: result));
+        _bloc.add(UpdateProfile(nickname: result));
       } else if (field == 'birthday' && result is DateTime) {
         _bloc.add(UpdateProfile(birthdate: result));
       } else if (field == 'keyword' && result is List<String>) {
@@ -103,7 +103,7 @@ class _MyPageScreenState extends State<MyPageScreen> {
                                   fontSize: 19.sp,
                                   fontWeight: FontWeight.w700,
                                   fontFamily: 'Pretendard')),
-                          trailing: _trailingText(profile.name),
+                          trailing: _trailingText(profile.nickname),
                           onTap: () => _navigateAndPatch(context, 'nickname'),
                         ),
                         ListTile(

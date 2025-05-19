@@ -79,129 +79,152 @@ class _MemoryDetailScreenState extends State<MemoryDetailScreen> {
             bottom: false,
             child: _isLoading
                 ? const Center(child: CircularProgressIndicator())
-                : ListView.builder(
-                    padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
-                    itemCount: _history.length,
-                    physics: const BouncingScrollPhysics(),
-                    itemBuilder: (_, index) {
-                      final item = _history[index];
-
-                      return Container(
-                          margin: EdgeInsets.symmetric(vertical: 5.h),
-                          padding: EdgeInsets.all(14.w),
-                          decoration: BoxDecoration(
-                            color: const Color(0xFFFFFBEA),
-                            borderRadius: BorderRadius.circular(16.r),
-                            boxShadow: const [
-                              BoxShadow(
-                                color: Color(0x22000000),
-                                blurRadius: 8,
-                                offset: Offset(0, 4),
+                : _history.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text('🕊️', style: TextStyle(fontSize: 70.sp)),
+                            SizedBox(height: 4.h),
+                            Text(
+                              "No memory records yet\nand that's totally fine.",
+                              textAlign: TextAlign.center,
+                              style: TextStyle(
+                                fontSize: 14.sp,
+                                color: const Color(0xFF555555),
+                                height: 1.5,
+                                fontFamily: 'Pretendard',
+                                fontWeight: FontWeight.bold,
                               ),
-                            ],
-                          ),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // Q + 날짜
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  SizedBox(
-                                    width: 40.w,
-                                    child: Text(
-                                      'Q:',
-                                      style: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w600,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
-                                      ),
-                                    ),
-                                  ),
-                                  Expanded(
-                                    ////질문!!!!!!!!!!!!!!!!!--------------------------
-                                    child: Text(
-                                      item.question,
-                                      style: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w600,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
-                                      ),
-                                    ),
-                                  ),
-                                  Padding(
-                                    ////날짜!!!!!!!!!!!!!!!!!--------------------------
-                                    padding:
-                                        EdgeInsets.only(left: 8.w), // 날짜 왼쪽 패딩
-                                    child: Text(
-                                      item.date,
-                                      style: TextStyle(
-                                        fontSize: 10.sp,
-                                        fontStyle: FontStyle.italic,
-                                        fontFamily: 'Pretendard',
-                                        color: const Color.fromARGB(
-                                            255, 86, 86, 86),
-                                      ),
-                                    ),
+                            ),
+                          ],
+                        ),
+                      )
+                    : ListView.builder(
+                        padding: EdgeInsets.fromLTRB(16.w, 0, 16.w, 32.h),
+                        itemCount: _history.length,
+                        physics: const BouncingScrollPhysics(),
+                        itemBuilder: (_, index) {
+                          final item = _history[index];
+
+                          return Container(
+                              margin: EdgeInsets.symmetric(vertical: 5.h),
+                              padding: EdgeInsets.all(14.w),
+                              decoration: BoxDecoration(
+                                color: const Color(0xFFFFFBEA),
+                                borderRadius: BorderRadius.circular(16.r),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x22000000),
+                                    blurRadius: 8,
+                                    offset: Offset(0, 4),
                                   ),
                                 ],
                               ),
-                              SizedBox(height: 8.h),
-
-                              // A:
-                              Row(
+                              child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  SizedBox(
-                                    width: 40.w,
-                                    child: Text(
-                                      'A:',
-                                      style: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w600,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
+                                  // Q + 날짜
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 40.w,
+                                        child: Text(
+                                          'Q:',
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                          ),
+                                        ),
                                       ),
-                                    ),
+                                      Expanded(
+                                        ////질문!!!!!!!!!!!!!!!!!--------------------------
+                                        child: Text(
+                                          item.question,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ),
+                                      Padding(
+                                        ////날짜!!!!!!!!!!!!!!!!!--------------------------
+                                        padding: EdgeInsets.only(
+                                            left: 8.w), // 날짜 왼쪽 패딩
+                                        child: Text(
+                                          item.date,
+                                          style: TextStyle(
+                                            fontSize: 10.sp,
+                                            fontStyle: FontStyle.italic,
+                                            fontFamily: 'Pretendard',
+                                            color: const Color.fromARGB(
+                                                255, 86, 86, 86),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  Expanded(
-                                    ////대답!!!!!!!!!!!!!!!!!--------------------------
-                                    child: Text(
-                                      item.answer,
-                                      style: TextStyle(
-                                        fontSize: 15.sp,
-                                        fontFamily: 'Pretendard',
-                                        fontWeight: FontWeight.w600,
-                                        color:
-                                            const Color.fromARGB(255, 0, 0, 0),
+                                  SizedBox(height: 8.h),
+
+                                  // A:
+                                  Row(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      SizedBox(
+                                        width: 40.w,
+                                        child: Text(
+                                          'A:',
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                          ),
+                                        ),
                                       ),
+                                      Expanded(
+                                        ////대답!!!!!!!!!!!!!!!!!--------------------------
+                                        child: Text(
+                                          item.answer,
+                                          style: TextStyle(
+                                            fontSize: 15.sp,
+                                            fontFamily: 'Pretendard',
+                                            fontWeight: FontWeight.w600,
+                                            color: const Color.fromARGB(
+                                                255, 0, 0, 0),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  SizedBox(height: 20.h),
+
+                                  // 이유는 왼쪽으로 정렬 유지 (공백 없이)
+                                  Text(
+                                    ////이유!!!!!!!!!!!!!!!!!--------------------------
+                                    item.mciReason,
+                                    style: TextStyle(
+                                      fontSize: 14.sp,
+                                      fontStyle: FontStyle.italic,
+                                      fontFamily: 'Pretendard',
+                                      fontWeight: FontWeight.w400,
+                                      color: Colors.grey[500],
                                     ),
                                   ),
                                 ],
-                              ),
-                              SizedBox(height: 20.h),
-
-                              // 이유는 왼쪽으로 정렬 유지 (공백 없이)
-                              Text(
-                                ////이유!!!!!!!!!!!!!!!!!--------------------------
-                                item.mciReason,
-                                style: TextStyle(
-                                  fontSize: 14.sp,
-                                  fontStyle: FontStyle.italic,
-                                  fontFamily: 'Pretendard',
-                                  fontWeight: FontWeight.w400,
-                                  color: Colors.grey[500],
-                                ),
-                              ),
-                            ],
-                          ));
-                    },
-                  ),
+                              ));
+                        },
+                      ),
           ),
         ],
       ),

@@ -14,13 +14,13 @@ Future<Profile> fetchProfile() async {
 }
 
 Future<void> patchProfile({
-  String? name,
+  String? nickname,
   DateTime? birthdate,
   List<String>? keywords,
 }) async {
   try {
     final data = {
-      if (name != null) 'name': name,
+      if (nickname != null) 'nickname': nickname,
       if (birthdate != null) 'birthdate': birthdate.toIso8601String(),
       if (keywords != null) 'keywords': keywords,
     };
