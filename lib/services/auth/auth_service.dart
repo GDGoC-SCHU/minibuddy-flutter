@@ -25,7 +25,6 @@ class AuthService {
           const SnackBar(
             content: Text(
               'Failed to log out. Please try again.',
-              textAlign: TextAlign.center,
             ),
           ),
         );
