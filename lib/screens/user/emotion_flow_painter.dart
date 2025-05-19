@@ -14,7 +14,6 @@ class EmotionFlowPainter extends CustomPainter {
     final padding = 12.w;
     final legendWidth = 50.w;
 
-    // 회색 박스 높이를 살짝 줄여 날짜 영역 확보
     final graphBox = Rect.fromLTWH(
       0,
       padding,
@@ -22,7 +21,6 @@ class EmotionFlowPainter extends CustomPainter {
       size.height - padding * 3,
     );
 
-    // 회색 박스 배경
     final Paint boxPaint = Paint()
       ..color = Colors.grey.withOpacity(0.1)
       ..style = PaintingStyle.fill;
@@ -31,18 +29,7 @@ class EmotionFlowPainter extends CustomPainter {
       boxPaint,
     );
 
-    // 데이터 없음 안내 처리
     if (flow.isEmpty) {
-      // 회색 박스 배경은 그대로
-      final Paint boxPaint = Paint()
-        ..color = Colors.grey.withOpacity(0.1)
-        ..style = PaintingStyle.fill;
-      canvas.drawRRect(
-        RRect.fromRectAndRadius(graphBox, Radius.circular(12.r)),
-        boxPaint,
-      );
-
-      // 안내 문구
       final textPainter = TextPainter(
         text: TextSpan(
           text: 'No records from the past 7 days.',
@@ -64,10 +51,9 @@ class EmotionFlowPainter extends CustomPainter {
       );
 
       textPainter.paint(canvas, offset);
-      return; // ⬅ 더 이상 아무것도 그리지 않음
+      return;
     }
 
-    // 그래프 선 색상 정의
     final Paint depPaint = Paint()
       ..color = const Color.fromARGB(2200, 51, 102, 204)
       ..strokeWidth = 3.w
@@ -89,7 +75,9 @@ class EmotionFlowPainter extends CustomPainter {
     final double graphTop = graphBox.top + 8.h;
     final double graphHeight = graphBox.height - 10.h;
 
-    // 점 좌표 저장용 리스트
+    const double yRange = 34; //여백 확보
+    final double unitHeight = graphHeight / yRange;
+
     final List<Offset> depPoints = [];
     final List<Offset> anxPoints = [];
     final List<Offset> strPoints = [];
@@ -98,9 +86,9 @@ class EmotionFlowPainter extends CustomPainter {
       final data = flow[i];
       final x = graphBox.left + xSpacing * (i + 1);
 
-      final depY = graphTop + (30 - data.depScore) * (graphHeight / 30);
-      final anxY = graphTop + (30 - data.anxScore) * (graphHeight / 30);
-      final strY = graphTop + (30 - data.strScore) * (graphHeight / 30);
+      final depY = graphTop + (31 - data.depScore) * unitHeight;
+      final anxY = graphTop + (31 - data.anxScore) * unitHeight;
+      final strY = graphTop + (31 - data.strScore) * unitHeight;
 
       if (i == 0) {
         depPath.moveTo(x, depY);
@@ -116,7 +104,6 @@ class EmotionFlowPainter extends CustomPainter {
       anxPoints.add(Offset(x, anxY));
       strPoints.add(Offset(x, strY));
 
-      // 날짜 텍스트
       final date = DateTime.parse(data.date);
       final label = DateFormat('M/d').format(date);
       final labelSpan = TextSpan(
@@ -135,7 +122,6 @@ class EmotionFlowPainter extends CustomPainter {
         Offset(x - labelPainter.width / 2, graphBox.bottom + 12.h),
       );
 
-      // Today 텍스트
       if (i == flow.length - 1) {
         final highestY = [depY, anxY, strY].reduce((a, b) => a < b ? a : b);
         final todaySpan = TextSpan(
@@ -156,12 +142,10 @@ class EmotionFlowPainter extends CustomPainter {
       }
     }
 
-    // ⬇ 1. 선 먼저 그리기
     canvas.drawPath(depPath, depPaint);
     canvas.drawPath(anxPath, anxPaint);
     canvas.drawPath(strPath, strPaint);
 
-    // ⬇ 2. 흰색 점은 마지막에 (맨 위에)
     final pointPaint = Paint()..color = const Color.fromARGB(197, 0, 0, 0);
     for (final p in depPoints) {
       canvas.drawCircle(p, size.width * 0.008, pointPaint);
@@ -173,32 +157,28 @@ class EmotionFlowPainter extends CustomPainter {
       canvas.drawCircle(p, size.width * 0.008, pointPaint);
     }
 
-    // ⬇ 3. 지그재그 경고선
-    if (flow.isNotEmpty) {
-      final warningY = graphTop + (30 - 21) * (graphHeight / 30);
-      final zigzagPath = Path()..moveTo(graphBox.left, warningY);
-      const double zigzagHeight = 6;
-      const double zigzagSpacing = 10;
-      for (double x = graphBox.left; x < graphBox.right; x += zigzagSpacing) {
-        zigzagPath.lineTo(
-          x,
-          warningY +
-              (x ~/ zigzagSpacing % 2 == 0 ? -zigzagHeight : zigzagHeight).h,
-        );
-      }
-      final Paint zigzagPaint = Paint()
-        ..color = const Color.fromARGB(191, 255, 17, 0)
-        ..strokeWidth = 4.w
-        ..style = PaintingStyle.stroke;
-      canvas.drawPath(zigzagPath, zigzagPaint);
+    final warningY = graphTop + (31 - 21) * unitHeight;
+    final zigzagPath = Path()..moveTo(graphBox.left, warningY);
+    const double zigzagHeight = 6;
+    const double zigzagSpacing = 10;
+    for (double x = graphBox.left; x < graphBox.right; x += zigzagSpacing) {
+      zigzagPath.lineTo(
+        x,
+        warningY +
+            (x ~/ zigzagSpacing % 2 == 0 ? -zigzagHeight : zigzagHeight).h,
+      );
     }
+    final Paint zigzagPaint = Paint()
+      ..color = const Color.fromARGB(191, 255, 17, 0)
+      ..strokeWidth = 4.w
+      ..style = PaintingStyle.stroke;
+    canvas.drawPath(zigzagPath, zigzagPaint);
 
-    // ⬇ 4. 레전드
     final legends = [
       {'label': 'DEP', 'color': const Color.fromARGB(200, 51, 102, 204)},
       {'label': 'ANX', 'color': const Color.fromARGB(200, 255, 153, 0)},
       {'label': 'STR', 'color': const Color.fromARGB(200, 204, 0, 51)},
-      {'label': 'RISK', 'type': 'zigzag'}, // 경고선 추가
+      {'label': 'RISK', 'type': 'zigzag'},
     ];
 
     final legendTextStyle = TextStyle(
@@ -214,36 +194,27 @@ class EmotionFlowPainter extends CustomPainter {
       final legend = legends[i];
       final y = legendStartY + i * 20.h;
 
-      if (legend.containsKey('type') && legend['type'] == 'zigzag') {
-        // 지그재그 선 그리기
+      if (legend['type'] == 'zigzag') {
         final zigzagLegendPath = Path()..moveTo(size.width - 50.w, y + 5.h);
-        const double height = 3;
-        const double spacing = 6;
-        for (double x = 0; x <= 12; x += spacing) {
-          final isUp = (x ~/ spacing) % 2 == 0;
+        for (double x = 0; x <= 12; x += 6) {
+          final isUp = (x ~/ 6) % 2 == 0;
           zigzagLegendPath.lineTo(
             size.width - 50.w + x,
-            y + 5.h + (isUp ? -height : height),
+            y + 5.h + (isUp ? -3 : 3),
           );
         }
-
         final Paint zigzagLegendPaint = Paint()
           ..color = const Color.fromARGB(191, 255, 17, 0)
           ..strokeWidth = 2
           ..style = PaintingStyle.stroke;
-
         canvas.drawPath(zigzagLegendPath, zigzagLegendPaint);
       } else {
         final paint = Paint()..color = legend['color'] as Color;
         canvas.drawRect(Rect.fromLTWH(size.width - 50.w, y, 10.w, 10.w), paint);
       }
 
-      final textSpan = TextSpan(
-        text: legend['label'] as String,
-        style: legendTextStyle,
-      );
       final tp = TextPainter(
-        text: textSpan,
+        text: TextSpan(text: '${legend['label']}', style: legendTextStyle),
         textDirection: ui.TextDirection.ltr,
       )..layout();
       tp.paint(canvas, Offset(size.width - 35.w, y - 1.h));
