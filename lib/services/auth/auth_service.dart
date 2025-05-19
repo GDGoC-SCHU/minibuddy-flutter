@@ -8,12 +8,13 @@ class AuthService {
   /// Firebase 로그아웃 + 서버 로그아웃 처리
   static Future<void> logout(BuildContext context) async {
     try {
-      // Firebase 로그아웃
-      await FirebaseAuth.instance.signOut();
-
-      // 서버 로그아웃 요청
+      // 1. 서버 로그아웃 먼저 수행 (헤더가 붙는 시점)
       await logoutFromServer();
 
+      // 2. Firebase 로그아웃은 가장 마지막
+      await FirebaseAuth.instance.signOut();
+
+      // 3. 라우팅
       if (context.mounted) {
         context.go('/');
       }
@@ -32,17 +33,15 @@ class AuthService {
     }
   }
 
+  /// 서버 로그아웃만 따로 (회원탈퇴 시에도 사용)
   static Future<void> logoutFromServer() async {
     try {
       String fcmToken = 'denied'; // 기본값: 권한 거부 시
 
-      // 권한 상태 확인
       final settings =
           await FirebaseMessaging.instance.getNotificationSettings();
-
       if (settings.authorizationStatus == AuthorizationStatus.authorized ||
           settings.authorizationStatus == AuthorizationStatus.provisional) {
-        // 권한이 있을 경우에만 실제 토큰 요청
         final token = await FirebaseMessaging.instance.getToken();
         if (token != null) {
           fcmToken = token;

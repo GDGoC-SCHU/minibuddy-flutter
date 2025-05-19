@@ -48,7 +48,7 @@ class FirebaseAuthProvider {
               'fcm_token': tokenToSend.isNotEmpty ? tokenToSend : 'unavailable',
             },
           );
-          print('✅ FCM 업데이트 응답: ${response.data}');
+          print('FCM 업데이트 응답: ${response.data}');
         }
 
         return (
