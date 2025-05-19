@@ -31,28 +31,41 @@ class EmotionFlowPainter extends CustomPainter {
       boxPaint,
     );
 
-    // 데이터 없음 안내 문구
-    final textPainter = TextPainter(
-      text: TextSpan(
-        text: 'No records from the past 7 days.',
-        style: TextStyle(
-          fontSize: 14.sp,
-          height: 1.6,
-          fontWeight: FontWeight.w600,
-          fontFamily: 'Pretendard',
-          color: Colors.grey[700],
+    // 데이터 없음 안내 처리
+    if (flow.isEmpty) {
+      // 회색 박스 배경은 그대로
+      final Paint boxPaint = Paint()
+        ..color = Colors.grey.withOpacity(0.1)
+        ..style = PaintingStyle.fill;
+      canvas.drawRRect(
+        RRect.fromRectAndRadius(graphBox, Radius.circular(12.r)),
+        boxPaint,
+      );
+
+      // 안내 문구
+      final textPainter = TextPainter(
+        text: TextSpan(
+          text: 'No records from the past 7 days.',
+          style: TextStyle(
+            fontSize: 14.sp,
+            height: 1.6,
+            fontWeight: FontWeight.w600,
+            fontFamily: 'Pretendard',
+            color: Colors.grey[700],
+          ),
         ),
-      ),
-      textAlign: TextAlign.center,
-      textDirection: ui.TextDirection.ltr,
-    )..layout(maxWidth: graphBox.width - 32.w);
+        textAlign: TextAlign.center,
+        textDirection: ui.TextDirection.ltr,
+      )..layout(maxWidth: graphBox.width - 32.w);
 
-    final offset = Offset(
-      graphBox.left + (graphBox.width - textPainter.width) / 2,
-      graphBox.top + (graphBox.height - textPainter.height) / 2,
-    );
+      final offset = Offset(
+        graphBox.left + (graphBox.width - textPainter.width) / 2,
+        graphBox.top + (graphBox.height - textPainter.height) / 2,
+      );
 
-    textPainter.paint(canvas, offset);
+      textPainter.paint(canvas, offset);
+      return; // ⬅ 더 이상 아무것도 그리지 않음
+    }
 
     // 그래프 선 색상 정의
     final Paint depPaint = Paint()
