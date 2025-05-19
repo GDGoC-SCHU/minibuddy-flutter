@@ -12,7 +12,7 @@ class ChatApi {
   }) async {
     final response = await ApiClient.instance.post(
       '/api/chat',
-      data: {'message': message},
+      data: {'chat': message},
       options: Options(extra: extra), // extra 전달
     );
     return response.data;
@@ -25,7 +25,7 @@ class ChatApi {
   }) async {
     final response = await ApiClient.instance.post(
       '/api/chat/memory',
-      data: {'message': message},
+      data: {'chat': message},
       options: Options(extra: extra), // extra 전달
     );
     return response.data;

@@ -14,14 +14,14 @@ class EmotionDistributionModel {
   });
 
   factory EmotionDistributionModel.fromJson(Map<String, dynamic> json) {
-    final data = json['data'];
+    final data = json['data'] ?? {};
 
     return EmotionDistributionModel(
-      totalCount: data['total_count'],
-      normal: data['normal'],
-      dep: data['dep'],
-      anx: data['anx'],
-      str: data['str'],
+      totalCount: (data['total_count'] as int?) ?? 0,
+      normal: (data['normal'] as int?) ?? 0,
+      dep: (data['dep'] as int?) ?? 0,
+      anx: (data['anx'] as int?) ?? 0,
+      str: (data['str'] as int?) ?? 0,
     );
   }
 

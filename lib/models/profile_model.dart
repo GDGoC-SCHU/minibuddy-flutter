@@ -1,12 +1,10 @@
 class Profile {
-  final String email;
-  final String name;
+  final String nickname;
   final DateTime birthdate;
   final List<String> keywords;
 
   Profile({
-    required this.email,
-    required this.name,
+    required this.nickname,
     required this.birthdate,
     required this.keywords,
   });
@@ -14,29 +12,26 @@ class Profile {
   factory Profile.fromJson(Map<String, dynamic> json) {
     final data = json['data'];
     return Profile(
-      email: data['email'] ?? '',
-      name: data['name'],
+      nickname: data['nickname'],
       birthdate: DateTime.parse(data['birthdate']),
       keywords: List<String>.from(data['keywords'] ?? []),
     );
   }
 
   Profile copyWith({
-    String? name,
+    String? nickname,
     DateTime? birthdate,
     List<String>? keywords,
   }) {
     return Profile(
-      email: email,
-      name: name ?? this.name,
+      nickname: nickname ?? this.nickname,
       birthdate: birthdate ?? this.birthdate,
       keywords: keywords ?? this.keywords,
     );
   }
 
   Map<String, dynamic> toJson() => {
-        'email': email,
-        'name': name,
+        'nickname': nickname,
         'birthdate': birthdate.toIso8601String(),
         'keywords': keywords,
       };

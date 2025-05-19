@@ -25,7 +25,7 @@ class ProfileRepository {
   }
 
   Future<void> updateProfile({
-    String? name,
+    String? nickname,
     DateTime? birthdate,
     List<String>? keywords,
   }) async {
@@ -34,13 +34,13 @@ class ProfileRepository {
     await handleRequest<void>(
       context: context,
       fetch: () => patchProfile(
-        name: name ?? current.name, // 변경 없으면 기존값
+        nickname: nickname ?? current.nickname, // 변경 없으면 기존값
         birthdate: birthdate ?? current.birthdate,
         keywords: keywords ?? current.keywords,
       ),
       onSuccess: (_) => debugPrint('PATCH 성공'),
       retry: () => updateProfile(
-        name: name,
+        nickname: nickname,
         birthdate: birthdate,
         keywords: keywords,
       ),

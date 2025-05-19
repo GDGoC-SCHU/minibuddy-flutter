@@ -12,7 +12,9 @@ class OnboardingRepository {
       "nickname": state.nickname,
       "birthdate": state.birthdate,
       "keywords": state.keywords,
-      "fcm_token": state.fcmToken,
+      "fcm_token": (state.fcmToken.trim().isNotEmpty)
+          ? state.fcmToken
+          : "unavailable", // fallback 처리
     };
 
     final response = await _api.signup(payload);

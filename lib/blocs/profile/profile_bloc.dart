@@ -20,7 +20,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<UpdateProfile>((event, emit) async {
       try {
         await repository.updateProfile(
-          name: event.name,
+          nickname: event.nickname,
           birthdate: event.birthdate,
           keywords: event.keywords,
         );
