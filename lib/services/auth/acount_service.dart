@@ -17,13 +17,10 @@ class AccountService {
       print('회원탈퇴 응답: $result / $data');
 
       if (result['result_code'] == 200 && data == 'user deleted successfully') {
-        // 2. 서버 로그아웃
-        await AuthService.logoutFromServer();
-
-        // 3. Firebase 로그아웃
+        // 2. Firebase 로그아웃
         await FirebaseAuth.instance.signOut();
 
-        // 4. 홈으로 이동
+        // 3. 홈으로 이동
         if (context.mounted) {
           context.go('/');
         }
