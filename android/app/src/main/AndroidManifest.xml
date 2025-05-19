@@ -2,6 +2,9 @@
     <uses-permission android:name="android.permission.RECORD_AUDIO"/>
     <uses-permission android:name="android.permission.INTERNET"/>
     <application
+        <meta-data
+            android:name="com.google.firebase.messaging.default_notification_channel_id"
+            android:value="default_notification_channel_id"/>
         android:usesCleartextTraffic="true"
         android:label="minibuddy"
         android:name="${applicationName}"
