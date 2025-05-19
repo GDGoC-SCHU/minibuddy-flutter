@@ -29,9 +29,11 @@ class ApiClient {
           }
 
           // 3) 상황별 커스텀 헤더
-          //    - extra['chatRequest'] == true 로 표시해 두었다고 가정
-          if (options.extra['chatRequest'] == true) {
-            options.headers['X-Chat-Request-Type'] = 'qe';
+          final chatType = options.extra['chatType'];
+          if (chatType == 'normal') {
+            options.headers['x-chat-type'] = 'normal';
+          } else if (chatType == 'memory-question') {
+            options.headers['x-chat-type'] = 'memory-question';
           }
 
           return handler.next(options);

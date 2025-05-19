@@ -1,33 +1,37 @@
 import 'package:dio/dio.dart';
+import 'package:minibuddy/utils/api_client.dart';
 
 class ChatApi {
   final Dio dio;
   ChatApi(this.dio);
 
   /// 1) 일반 대화(chatCount < 10)
-  Future<Map<String, dynamic>> sendChatRequest(String chat) async {
-    final res = await dio.post(
+  Future<Map<String, dynamic>> sendChatRequest(
+    String message, {
+    Map<String, dynamic>? extra,
+  }) async {
+    final response = await ApiClient.instance.post(
       '/api/chat',
-      data: {'chat': chat},
-      // 헤더 X | extra X  → Interceptor가 토큰만 붙여 줌
+      data: {'message': message},
+      options: Options(extra: extra), // extra 전달
     );
-    return res.data;
+    return response.data;
   }
 
-  /// 2) 기억력 질문(chatCount ≥ 10)
-  Future<Map<String, dynamic>> sendMemoryQuestionRequest(String chat) async {
-    final res = await dio.post(
-      '/api/chat',
-      data: {'chat': chat},
-      options: Options(
-        extra: {'memoryQuestion': true}, // ← 표식만 넘김
-      ),
-      // 헤더 X (Interceptor가 토큰 + X-Chat-Request-Type 둘 다 붙임)
+  // 기억 질문 요청
+  Future<Map<String, dynamic>> sendMemoryQuestionRequest(
+    String message, {
+    Map<String, dynamic>? extra,
+  }) async {
+    final response = await ApiClient.instance.post(
+      '/api/chat/memory',
+      data: {'message': message},
+      options: Options(extra: extra), // extra 전달
     );
-    return res.data;
+    return response.data;
   }
 
-  /// 3) 기억력 질문에 대한 답변
+  // 3) 기억력 질문에 대한 답변
   Future<Map<String, dynamic>> sendMemoryAnswerRequest(
       String chat, String questionId) async {
     final res = await dio.post(

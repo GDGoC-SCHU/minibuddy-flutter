@@ -8,7 +8,10 @@ class ChatRepository {
   // 일반 대화 요청 (chatCount < 10)
   Future<String> sendChat(String chat) async {
     try {
-      final result = await api.sendChatRequest(chat);
+      final result = await api.sendChatRequest(
+        chat,
+        extra: {'chatType': 'normal'}, // 헤더 주입용
+      );
       return result['reply'] ?? 'No response from API';
     } catch (e) {
       rethrow;
@@ -18,7 +21,10 @@ class ChatRepository {
   // 기억력 질문 요청 (chatCount >= 10)
   Future<String> sendMemoryQuestion(String chat) async {
     try {
-      final result = await api.sendMemoryQuestionRequest(chat);
+      final result = await api.sendMemoryQuestionRequest(
+        chat,
+        extra: {'chatType': 'memory-question'}, // 헤더 주입용
+      );
       return result['reply'] ?? 'No response from API';
     } catch (e) {
       rethrow;
