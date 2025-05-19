@@ -40,12 +40,16 @@ class FirebaseAuthProvider {
         OnboardingState().uid = user.uid;
 
         if (!isNewUser) {
-          final tokenToSend = fcmToken ?? 'mock-fcm-token';
-          final response = await ApiClient.instance.post(
-            '/api/user/fcm-update',
-            data: {'fcm-token': tokenToSend},
-          );
-          print('FCM 업데이트 응답: ${response.data}');
+          final tokenToSend = fcmToken ?? OnboardingState().fcmToken;
+          if (tokenToSend != null && tokenToSend.isNotEmpty) {
+            final response = await ApiClient.instance.post(
+              '/api/user/fcm-update',
+              data: {'fcm_token': tokenToSend},
+            );
+            print('FCM 업데이트 응답: ${response.data}');
+          } else {
+            print('⚠️ FCM 토큰이 비어 있어 서버 업데이트 생략');
+          }
         }
 
         return (

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
+import 'package:minibuddy/main.dart';
 
 // Onboarding
 import 'package:minibuddy/screens/onboarding/initial_screen.dart';
@@ -24,6 +25,7 @@ import 'package:minibuddy/screens/history/memory_detail_screen.dart';
 
 final GoRouter router = GoRouter(
   initialLocation: '/',
+  navigatorKey: navigatorKey,
   routes: [
     GoRoute(path: '/', builder: (_, __) => const InitialScreen()),
 

@@ -1,13 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:minibuddy/config.dart';
+import 'package:minibuddy/services/onboarding/onboarding_state.dart';
 import 'package:minibuddy/utils/router.dart';
 import 'firebase_options.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
 import 'dart:io' show Platform;
-import 'dart:js' as js;
+import 'package:minibuddy/web/register_service_worker.dart';
+
+final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   await Firebase.initializeApp();
@@ -21,8 +24,8 @@ Future<void> main() async {
   );
   print('Firebase Initialized');
 
-  if (!kIsWeb && Platform.isAndroid) {
-    FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
+  if (kIsWeb) {
+    registerServiceWorker(); // 웹에서만 실행
   }
 
   await _initFCM(); // 플랫폼별 내부에서 분기
@@ -33,34 +36,88 @@ Future<void> main() async {
 Future<void> _initFCM() async {
   final messaging = FirebaseMessaging.instance;
 
-  // 서비스워커 등록 - 웹
-  if (kIsWeb) {
-    final navigator = js.context['navigator'];
-    if (navigator != null && navigator.hasProperty('serviceWorker')) {
-      navigator['serviceWorker']
-          .callMethod('register', ['firebase-messaging-sw.js']);
-      print('✅ ServiceWorker registered');
-    } else {
-      print('🚫 ServiceWorker not supported in this browser');
-    }
-  }
-
-  // 권한 요청
   await messaging.requestPermission();
 
-  // 토큰 발급
   String? token;
   if (kIsWeb) {
-    token = await messaging.getToken(vapidKey: vapidKey); // from config
+    token = await messaging.getToken(vapidKey: vapidKey); // from config.dart
   } else if (Platform.isAndroid) {
     token = await messaging.getToken();
   }
 
-  print('🔑 FCM Token: $token');
+  if (token != null) {
+    print('🔑 FCM Token: $token');
+    OnboardingState().fcmToken = token!;
+  } else {
+    print('⚠️ FCM Token을 가져오지 못했습니다.');
+  }
 
-  // 포그라운드 메시지 리스너
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {
-    print('📩 포그라운드 메시지 수신: ${message.notification?.title}');
+    final title = message.notification?.title ?? 'Warnning!';
+    final body = message.notification?.body ?? '';
+    final imageUrl = message.notification?.android?.imageUrl ??
+        message.data['image'] ??
+        null;
+
+    print('📩 인앱 메시지 수신: $title - $body');
+
+    // 안전하게 프레임 이후 실행
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final overlay = navigatorKey.currentState?.overlay;
+      if (overlay != null) {
+        final overlayEntry = OverlayEntry(
+          builder: (context) => Positioned(
+            top: MediaQuery.of(context).padding.top + 16,
+            left: 16,
+            right: 16,
+            child: Material(
+              elevation: 6,
+              borderRadius: BorderRadius.circular(12),
+              child: Container(
+                padding: const EdgeInsets.all(12),
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (imageUrl != null)
+                      ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: Image.network(
+                          imageUrl,
+                          width: 48,
+                          height: 48,
+                          fit: BoxFit.cover,
+                        ),
+                      ),
+                    const SizedBox(width: 12),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(title,
+                              style: const TextStyle(
+                                  fontWeight: FontWeight.bold, fontSize: 14)),
+                          const SizedBox(height: 4),
+                          Text(body, style: const TextStyle(fontSize: 13)),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+
+        overlay.insert(overlayEntry);
+        Future.delayed(const Duration(seconds: 4), () => overlayEntry.remove());
+      } else {
+        print('❌ overlay is null');
+      }
+    });
   });
 }
 
@@ -114,7 +171,7 @@ class MinibuddyApp extends StatelessWidget {
                 color: const Color.fromARGB(255, 255, 255, 255),
                 fontFamily: 'Pretendard',
                 fontSize: 15,
-                fontWeight: FontWeight.w700),
+                fontWeight: FontWeight.w600),
           ),
         ),
         routerConfig: router,
