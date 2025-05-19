@@ -33,7 +33,6 @@ class AccountService {
           const SnackBar(
             content: Text(
               'Failed to delete account. Please try again.',
-              textAlign: TextAlign.center,
             ),
           ),
         );
