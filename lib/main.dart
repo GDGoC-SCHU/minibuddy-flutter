@@ -19,6 +19,16 @@ Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
 
 Future<void> main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  FlutterError.onError = (FlutterErrorDetails details) {
+    debugPrint('[FlutterError] ${details.exceptionAsString()}');
+  };
+
+  PlatformDispatcher.instance.onError = (error, stack) {
+    debugPrint('[PlatformDispatcherError] $error');
+    return true;
+  };
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -28,7 +38,9 @@ Future<void> main() async {
     registerServiceWorker(); // 웹에서만 실행
   }
 
-  await _initFCM(); // 플랫폼별 내부에서 분기
+  if (!kIsWeb) {
+    await _initFCM(); // 모바일(Android/iOS)은 자동 요청
+  }
 
   runApp(const MinibuddyApp());
 }
