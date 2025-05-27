@@ -1,7 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/foundation.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 import 'package:minibuddy/utils/api_client.dart';
 import 'package:minibuddy/services/onboarding/onboarding_state.dart';
+import 'package:minibuddy/utils/web_only_utils.dart';
 
 enum AuthStatus {
   loginSuccess,
@@ -12,8 +14,56 @@ enum AuthStatus {
 class FirebaseAuthProvider {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
+  Future<(AuthStatus, User?)?> handleRedirectResult([String? fcmToken]) async {
+    try {
+      final result = await FirebaseAuth.instance.getRedirectResult();
+      final user = result.user;
+
+      if (user != null) {
+        print('Redirect 로그인 완료: ${user.email}');
+        OnboardingState().uid = user.uid;
+
+        final isNewUser = result.additionalUserInfo?.isNewUser ?? false;
+
+        // FCM 토큰 전송도 여기서
+        if (!isNewUser) {
+          final rawToken = fcmToken ?? OnboardingState().fcmToken;
+          final tokenToSend = (rawToken != null && rawToken.trim().isNotEmpty)
+              ? rawToken.trim()
+              : 'unavailable';
+
+          final response = await ApiClient.instance.post(
+            '/api/user/fcm-update',
+            data: {
+              'fcm_token': tokenToSend,
+            },
+          );
+          print('FCM 업데이트 응답 (redirect): ${response.data}');
+        }
+
+        return (
+          isNewUser ? AuthStatus.registerSuccess : AuthStatus.loginSuccess,
+          user
+        );
+      }
+
+      return null;
+    } catch (e, stack) {
+      print('❌ Redirect 결과 처리 중 오류: $e');
+      print(stack);
+      return (AuthStatus.loginFailed, null);
+    }
+  }
+
   Future<(AuthStatus, User?)> loginWithGoogle([String? fcmToken]) async {
     try {
+      if (kIsWeb && isIosWeb()) {
+        print('iOS 웹 → redirect으로');
+        final googleProvider = GoogleAuthProvider();
+        await _auth.signInWithRedirect(googleProvider);
+        return (AuthStatus.loginFailed, null); // redirect 이후 다시 진입 시 처리됨
+      }
+
       print('🔵 GoogleSignIn 시도');
       final googleUser = await GoogleSignIn().signIn();
       print('🔵 googleUser: $googleUser');

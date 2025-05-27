@@ -38,6 +38,32 @@ class InitialScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    //iOS 웹 리디렉션 결과 처리
+    Future.microtask(() async {
+      print('🔵 Redirect 처리 진입');
+
+      if (!kIsWeb) return;
+
+      final redirectResult =
+          await FirebaseAuthProvider().handleRedirectResult();
+      print('🔵 Redirect 결과: $redirectResult');
+
+      print('🔵 Redirect 사용자 있음, 상태: ${redirectResult?.$1}');
+      if (redirectResult != null) {
+        final (status, user) = redirectResult;
+
+        if (status == AuthStatus.registerSuccess) {
+          context.go('/onboarding/nickname');
+        } else if (status == AuthStatus.loginSuccess) {
+          context.go('/home');
+        } else {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(content: Text('Redirect 로그인 실패')),
+          );
+        }
+      }
+    });
+
     return Scaffold(
       body: Stack(
         children: [
