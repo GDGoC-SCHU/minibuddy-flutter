@@ -2,11 +2,26 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:go_router/go_router.dart';
 import 'package:minibuddy/services/auth/firebase_auth_provider.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:minibuddy/services/fcm/fcm_service.dart';
 
 class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
+    // 웹 플랫폼일 경우 먼저 권한 요청
+    if (kIsWeb) {
+      final settings = await FirebaseMessaging.instance.requestPermission();
+
+      if (settings.authorizationStatus == AuthorizationStatus.authorized) {
+        print('웹 알림 권한 허용됨');
+        await initFCM(); // FCM 토큰 발급 + onMessage 등록
+      } else {
+        print('웹 알림 권한 거부됨');
+      }
+    }
+
     final (status, user) = await FirebaseAuthProvider().loginWithGoogle();
 
     if (status == AuthStatus.registerSuccess) {
