@@ -14,8 +14,14 @@ class FirebaseAuthProvider {
 
   Future<(AuthStatus, User?)> loginWithGoogle([String? fcmToken]) async {
     try {
+      print('🔵 GoogleSignIn 시도');
       final googleUser = await GoogleSignIn().signIn();
-      if (googleUser == null) return (AuthStatus.loginFailed, null);
+      print('🔵 googleUser: $googleUser');
+
+      if (googleUser == null) {
+        print('🔵 유저가 로그인 취소함');
+        return (AuthStatus.loginFailed, null);
+      }
 
       final googleAuth = await googleUser.authentication;
       final credential = GoogleAuthProvider.credential(
@@ -40,7 +46,10 @@ class FirebaseAuthProvider {
         OnboardingState().uid = user.uid;
 
         if (!isNewUser) {
-          final tokenToSend = (fcmToken ?? OnboardingState().fcmToken).trim();
+          final rawToken = fcmToken ?? OnboardingState().fcmToken;
+          final tokenToSend = (rawToken != null && rawToken.trim().isNotEmpty)
+              ? rawToken.trim()
+              : 'unavailable';
 
           final response = await ApiClient.instance.post(
             '/api/user/fcm-update',
@@ -59,8 +68,9 @@ class FirebaseAuthProvider {
         print('user가 null입니다. 로그인 실패로 처리합니다.');
         return (AuthStatus.loginFailed, null);
       }
-    } catch (e) {
+    } catch (e, stack) {
       print('구글 로그인 오류: $e');
+      print('스택: $stack');
       return (AuthStatus.loginFailed, null);
     }
   }

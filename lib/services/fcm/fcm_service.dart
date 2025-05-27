@@ -18,11 +18,12 @@ Future<void> initFCM() async {
     token = await messaging.getToken();
   }
 
-  if (token != null) {
+  if (token != null && token.isNotEmpty) {
     print('🔑 FCM Token: $token');
-    OnboardingState().fcmToken = token!;
+    OnboardingState().fcmToken = token;
   } else {
-    print('⚠️ FCM Token을 가져오지 못했습니다.');
+    print('⚠️ FCM Token을 가져오지 못했습니다. 기본값으로 처리합니다.');
+    OnboardingState().fcmToken = 'unavailable';
   }
 
   FirebaseMessaging.onMessage.listen((RemoteMessage message) {

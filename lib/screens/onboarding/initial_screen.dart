@@ -10,6 +10,7 @@ class InitialScreen extends StatelessWidget {
   const InitialScreen({super.key});
 
   Future<void> _handleGoogleLogin(BuildContext context) async {
+    print('🔵 로그인 요청');
     // 웹 플랫폼일 경우 먼저 권한 요청
     if (kIsWeb) {
       final settings = await FirebaseMessaging.instance.requestPermission();
